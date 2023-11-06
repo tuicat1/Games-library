@@ -8,16 +8,28 @@
 </head>
 <body>
     <header class="header">
-        <h1>Video Game Database</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Games</a></li>
-                <li><a href="#">Platforms</a></li>
-                <li><a href="#">Developers</a></li>
-            </ul>
-        </nav>
+        <div class="header-content">
+            <div class="header-left">
+                <h1 class="header-title">Video Game Database</h1>
+            </div>
+            <div class="header-right">
+                <nav class="header-nav">
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Games</a></li>
+                        <li><a href="#">Statistics</a></li>
+                        <li><a href="#">Developers</a></li>
+                    </ul>
+                </nav>
+                <div class="search-bar">
+                    <input type="text" id="search" placeholder="Search...">
+                    <button id="search-button">Search</button>
+                </div>
+            </div>
+        </div>
     </header>
+    
+    
     <main>
         <h2>Featured Games</h2>
         

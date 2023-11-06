@@ -11,56 +11,102 @@ body {
     background-color: #f0f0f0;
     color: #333;
     font-family: Arial, sans-serif;
-    margin: 0; /* Remove default body margin */
+    margin: 0;
 }
 
-/* Style the header to cover the full width of the screen */
-header {
-    background-color: #333; /* Set your desired background color */
-    color: #fff; /* Set the text color */
-    padding: 20px 0; /* Add top and bottom padding as needed */
-    text-align: center; /* Center-align the content */
-    width: 100%; /* Make the header span the full width of the viewport */
-}
-.header h1 {
-    font-size: 32px;
+/* Style the header */
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.header nav ul {
+.header-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    text-align: left;
+}
+
+.header-title {
+    font-size: 24px;
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+}
+
+#search {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#search-button {
+    background-color: #0077b6;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.header-nav ul {
     list-style: none;
+    margin: 0;
 }
 
-.header nav li {
+.header-nav li {
     display: inline;
-    margin-right: 20px;
+    margin-right: 10px;
 }
 
-.header nav a {
+.header-nav a {
     text-decoration: none;
     color: #fff;
     font-weight: bold;
+    text-align: left;
 }
 
 /* Style the main content sections */
 .main {
-    max-width: 100%; /* Make it span the full width of the viewport */
+    max-width: 100%;
     padding: 20px;
-    margin-top: 80px; /* Adjust for the header's height */
+    margin-top: 60px;
 }
 
 
 .featured-games {
     display: flex;
-    overflow-x: scroll; /* Enable horizontal scrolling */
+    overflow-x: scroll;
     white-space: nowrap;
-    height: 500px
+    height: 500px;
 }
 
 .game {
     flex: 0 0 auto;
-    width: 300px; /* Adjust the width of each game item */
-    margin-right: 20px; /* Adjust the spacing between game items */
-    border: 1px solid #ccc; /* Add a border or other styling as needed */
+    width: 300px;
+    margin-right: 20px;
+    border: 1px solid #ccc;
 }
 
 .games {
@@ -69,7 +115,8 @@ header {
     justify-content: space-between;
 }
 
-.featured h2, .games h2 {
+.featured h2,
+.games h2 {
     font-size: 24px;
     margin-bottom: 10px;
 }
