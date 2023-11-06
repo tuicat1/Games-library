@@ -1,0 +1,114 @@
+/* Reset default margin and padding for all elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Set a background color and text color for the entire page */
+body {
+    background-color: #f0f0f0;
+    color: #333;
+    font-family: Arial, sans-serif;
+    margin: 0; /* Remove default body margin */
+}
+
+/* Style the header to cover the full width of the screen */
+header {
+    background-color: #333; /* Set your desired background color */
+    color: #fff; /* Set the text color */
+    padding: 20px 0; /* Add top and bottom padding as needed */
+    text-align: center; /* Center-align the content */
+    width: 100%; /* Make the header span the full width of the viewport */
+}
+.header h1 {
+    font-size: 32px;
+}
+
+.header nav ul {
+    list-style: none;
+}
+
+.header nav li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.header nav a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Style the main content sections */
+.main {
+    max-width: 100%; /* Make it span the full width of the viewport */
+    padding: 20px;
+    margin-top: 80px; /* Adjust for the header's height */
+}
+
+
+.featured-games {
+    display: flex;
+    overflow-x: scroll; /* Enable horizontal scrolling */
+    white-space: nowrap;
+    height: 500px
+}
+
+.game {
+    flex: 0 0 auto;
+    width: 300px; /* Adjust the width of each game item */
+    margin-right: 20px; /* Adjust the spacing between game items */
+    border: 1px solid #ccc; /* Add a border or other styling as needed */
+}
+
+.games {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.featured h2, .games h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* Style the game cards */
+.game-card {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.game-card img {
+    max-width: 150px;
+    max-height: 200px;
+    margin-right: 20px;
+}
+
+.game-card h3 {
+    font-size: 18px;
+}
+
+.game-card p {
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.game-card ul {
+    list-style: none;
+}
+
+.game-card li {
+    margin-bottom: 5px;
+}
+
+/* Style the footer */
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #0077b6;
+    color: #fff;
+    font-size: 14px;
+}
