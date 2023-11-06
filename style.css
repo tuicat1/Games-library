@@ -89,13 +89,16 @@ body {
 
 /* Style the main content sections */
 .main {
-    max-width: 100%;
+    max-width: 1300px; /* Set a max width for the main content */
+    margin: 0 auto; /* Center the main content */
     padding: 20px;
     margin-top: 60px;
 }
 
 
 .featured-games {
+    max-width: 1300px;
+    margin: 0 auto;
     display: flex;
     overflow-x: scroll;
     white-space: nowrap;
@@ -110,6 +113,8 @@ body {
 }
 
 .games {
+    max-width: 1300px;
+    margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
