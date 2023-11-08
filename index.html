@@ -28,31 +28,57 @@
             </div>
         </div>
     </header>
-    
-    
+
     <main>
-        
-        
-        <!-- Include the featured games section -->
         <section class="featured-games">
             <h2>Featured Games</h2>
-            <div class="game">
-                <img src="https://via.placeholder.com/150x200" alt="Game Cover">
-                <div>
-                    <h3>Game Title 1</h3>
-                    <p>Game Description</p>
-                    <ul>
-                        <li>Platform: Platform Name</li>
-                        <li>Developer: Developer Name</li>
-                        <li>Release Date: MM/DD/YYYY</li>
-                    </ul>
-                    <a href="#">Read More</a>
-                </div>
-            </div>
-    
-            <!-- Add more game items here as needed -->
+            <div id="featured-games"></div>
         </section>
-        
+        <script>
+            // Function to fetch and display featured games
+            function fetchFeaturedGames() {
+                fetch('https://5way6uz0y2.execute-api.us-west-2.amazonaws.com/production/v4/games', {
+                    method: 'POST',
+                    headers: {
+                        // 'Client-ID': 'irf1sz9onq3k8rrnel5ieacesz2wh9',
+                        // 'Authorization': 'Bearer y4y2tmunw9cnufqjocnkpldavmzqps',
+                        'x-api-key': 'FNIEzeXkwb7j50DaHfEof2bIDuRFyPxS11FT3zAZ',
+                        'Accept': 'application/json',
+                    },
+                    body: 'fields cover.url,name; limit 5;'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const featuredGames = document.getElementById('featured-games');
+
+                    data.forEach(game => {
+                        if (game.cover && game.name) {
+                            const gameCard = document.createElement('div');
+                            gameCard.classList.add('game-card');
+
+                            // Display the game cover image and name
+                            const coverImageURL = game.cover.url;
+                            const name = game.name;
+
+                            const coverImg = document.createElement('img');
+                            coverImg.src = `https:${coverImageURL}`;
+                            gameCard.appendChild(coverImg);
+
+                            const gameName = document.createElement('h3');
+                            gameName.textContent = name;
+                            gameCard.appendChild(gameName);
+
+                            featuredGames.appendChild(gameCard);
+                        }
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            // Call the function to fetch and display featured games
+            fetchFeaturedGames();
+        </script>
+
         <section class="games">
             <h2>Latest Games</h2>
             <ul>
@@ -69,7 +95,7 @@
                         </ul>
                         <a href="#">Read More</a>
                     </div>
-                </li>                
+                </li>
             </ul>
         </section>
     </main>
@@ -78,5 +104,3 @@
     </footer>
 </body>
 </html>
-
-

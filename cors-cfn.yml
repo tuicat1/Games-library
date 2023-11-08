@@ -1,0 +1,659 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "This template will deploy an API Gateway stack that will Proxy the IGDB Api and keep track of your application credentials and token updates."
+
+Parameters:
+  Agreement:
+    Type: String
+    AllowedValues:
+      - "I Do Not Agree"
+      - "I Agree"
+    Default: "I Do Not Agree"
+    Description: I understand that this stack definition is provided with no representations or warranties. This stack will run on my own AWS account and I will be responsible for any associated costs that may apply.
+
+  TwitchClientID:
+    Type: String
+    Description: "Your Twitch Application Client ID"
+  TwitchAppAccessToken:
+    Type: String
+    Description: "Your Twitch Application Access Token, will be automatically generated after deploy"
+  TwitchClientSecret:
+    Type: String
+    Description: "Your Twitch Application Secret"
+  AutomaticAccessTokenRotationTime:
+    Type: Number
+    Default: 30
+    Description: "The number of days between Automatic AccessToken rotation, default is 30 days. One Access Token lasts for 60 days."
+  RotationLambdaPythonLayer:
+    Type: String
+    Default: "arn:aws:lambda:us-west-2:770693421928:layer:Klayers-p39-requests:12"
+    Description: "The rotation code needs a Python lambda layer to function correctly. The default layer specified is for the us-west-2(Oregon) region. If you want to deploy this stack in another region you will have to replace this with another layer. Layers can be found here: https://github.com/keithrozario/Klayers/tree/master/deployments/python3.9 use the `requests` layers. These layers are from a Thrid party, not accosiated with Twitch or IGDB."
+
+  ServiceName:
+    Type: String
+    Default: "IGDBSimpleProxy"
+    Description: "Default service name for this deployment, names the cluster services."
+  StageName:
+    Type: String
+    Default: "production"
+    Description: "The name of the default deployment stage that gets created"
+  CreatedByMsg:
+    Type: String
+    Default: "Cloudformation template -- see: https://api-docs.igdb.com/"
+    Description: "This message will be set on all resources so that you know why they exist."
+  ApiProxyAddress:
+    Type: String
+    Default: "https://api.igdb.com/"
+    Description: "The base address of the IGDB API"
+  ApiCachingEnabled:
+    Type: String
+    Default: "false"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: "Enabling caching will save similar requests in ApiGateway and not directly hit the IGDB API which can help avoid possible rate-limits(4 request/s). WARNING! Caching is not included in the AWS Free Tier and will come with costs see https://aws.amazon.com/api-gateway/pricing/ for more information. The used cache cluster size is 512MB with a price of $0.02 / Hour"
+  ApiCacheTTL:
+    Type: Number
+    Default: 10
+    Description: "The time-to-live (TTL) period, in seconds, that specifies how long to cache responses."
+  ApiGatewayEndpointConfiguration:
+    Type: String
+    Default: REGIONAL
+    Description: "Choose your Api distribution, REGIONAL is better for development and smaller apps that are in the same region as the API. EDGE is better for Production and for geographically distributed clients. More information: https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-endpoint-types.html"
+    AllowedValues:
+      - "EDGE"
+      - "REGIONAL"
+  
+  # Api Security
+  EnableApiKeys:
+    Type: String
+    Default: true
+    AllowedValues:
+      - true
+      - false
+    Description: "Protect your Api Instance with your own API key. This key will be handled as an Header under 'x-api-key'"
+  EnableCORS:
+    Type: String
+    Default: false
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: "Enable Cross-Origin Resource Sharing (CORS) to allow requests to Api Gateway directly from your browser."
+  CORSOrigin:
+    Type: String
+    Default: '*'
+    Description: "Your CORS Origin, `*` allows ALL origins. (This is not recommended, you should restrict access to your own domain)"
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "Warning & Agreement"
+        Parameters:
+          - Agreement
+      - Label:
+          default: "Twitch Credentials"
+        Parameters:
+          - TwitchClientID
+          - TwitchClientSecret
+          - TwitchAppAccessToken
+          - AutomaticAccessTokenRotationTime
+      - Label:
+          default: "Api Gateway Settings"
+        Parameters:
+          - ApiCachingEnabled
+          - ApiCacheTTL
+          - ApiGatewayEndpointConfiguration
+          - StageName
+          - RotationLambdaPythonLayer
+      - Label:
+          default: "Api Gateway Security"
+        Parameters: 
+          - EnableApiKeys
+          - EnableCORS
+          - CORSOrigin
+    ParameterLabels:
+      Agreement:
+        default: "Responsibility and consent"
+      TwitchClientID:
+        default: "Twitch Client ID"
+      TwitchClientSecret:
+        default: "Twitch Client Secret"
+      TwitchAppAccessToken:
+        default: "Twitch Access Token (Optional)"
+      AutomaticAccessTokenRotationTime:
+        default: "Twitch Access Token Rotation Time"
+      ApiCachingEnabled: 
+        default: "Api Request Caching"
+      ApiCacheTTL:
+        default: "Api Cache TTL"
+      ApiGatewayEndpointConfiguration:
+        default: "Api Endpoint Distribution"
+      StageName:
+        default: "Api Stage Name"
+      RotationLambdaPythonLayer:
+        default: "Lambda Python Layer for Access Token rotation"
+      EnableApiKeys:
+        default: "Create Api Key"
+      EnableCORS:
+        default: "Enable CORS Settings"
+      CORSOrigin:
+        default: "CORS Origin Settings"
+
+Conditions:
+  userAgrees: !Equals [ !Ref Agreement, "I Agree" ]
+  enableApiKeys: !Equals [ !Ref EnableApiKeys, true ]
+  enableCORS: !Equals [ !Ref EnableCORS, true ]
+
+Resources:
+
+  ApiGateway:
+    Type: AWS::ApiGateway::RestApi
+    Condition: userAgrees
+    Properties:
+      Name: !Sub "${ServiceName}-Gateway"
+      Description: "This API Gateway will act as a proxy to api.igdb.com"
+      EndpointConfiguration:
+        Types:
+          - !Ref ApiGatewayEndpointConfiguration
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${ServiceName}-Gateway"
+        - Key: "Service"
+          Value: !Ref ServiceName
+        - Key: "CreatedBy"
+          Value: !Ref CreatedByMsg
+
+  ApiGatewayAccount:
+    Type: AWS::ApiGateway::Account
+    Condition: userAgrees
+    Properties:
+      CloudWatchRoleArn: !GetAtt ApiGatewayIAMRole.Arn
+
+  ApiProxyEndpoint:
+    Type: AWS::ApiGateway::Resource
+    Condition: userAgrees
+    Properties:
+      RestApiId: !Ref ApiGateway
+      ParentId: !GetAtt ApiGateway.RootResourceId
+      PathPart: "{proxy+}" # This will allow us to proxy the requests to the API.
+
+  ApiProxyMethodGET:
+    Type: AWS::ApiGateway::Method
+    Condition: userAgrees
+    Properties:
+      HttpMethod: GET
+      ResourceId: !Ref ApiProxyEndpoint
+      RestApiId: !Ref ApiGateway
+      ApiKeyRequired: !If [enableApiKeys, true, false]
+      AuthorizationType: NONE
+      RequestParameters:
+        method.request.path.proxy: true
+      Integration:
+        Type: !If [enableCORS, HTTP, HTTP_PROXY]
+        Uri: !Sub "${ApiProxyAddress}{proxy}"
+        IntegrationHttpMethod: GET
+        IntegrationResponses:  
+        - !If 
+          - enableCORS
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: !Sub "'${CORSOrigin}'"
+          - !Ref AWS::NoValue
+        RequestParameters:
+          integration.request.path.proxy: method.request.path.proxy
+          integration.request.header.Authorization: stageVariables.token
+          integration.request.header.Client-ID: stageVariables.clientid
+          integration.request.header.x-sample-proxy-version: "'1'" # Has to be double-quoted so that api-gw knows to use the value as a string, not a mapping
+          integration.request.header.x-user-agent: "'igdb-simple-proxy'"
+        CacheKeyParameters:
+          - "integration.request.path.proxy"
+          - "integration.request.header.Client-ID"
+      MethodResponses:
+      - !If 
+        - enableCORS
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+        - !Ref AWS::NoValue
+  
+  ApiProxyMethodPOST:
+    Type: AWS::ApiGateway::Method
+    Condition: userAgrees
+    Properties:
+      HttpMethod: POST
+      ResourceId: !Ref ApiProxyEndpoint
+      RestApiId: !Ref ApiGateway
+      ApiKeyRequired: !If [enableApiKeys, true, false]
+      AuthorizationType: NONE
+      RequestParameters:
+        method.request.path.proxy: true
+      Integration:
+        Type: !If [enableCORS, HTTP, HTTP_PROXY]
+        Uri: !Sub "${ApiProxyAddress}{proxy}"
+        IntegrationHttpMethod: POST
+        IntegrationResponses:  
+        - !If 
+          - enableCORS
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: !Sub "'${CORSOrigin}'"
+          - !Ref AWS::NoValue
+        RequestParameters:
+          integration.request.path.proxy: method.request.path.proxy
+          integration.request.header.Authorization: stageVariables.token
+          integration.request.header.Client-ID: stageVariables.clientid
+          integration.request.header.x-sample-proxy-version: "'1'" # Has to be double-quoted so that api-gw knows to use the value as a string, not a mapping
+          integration.request.header.x-user-agent: "'igdb-simple-proxy'"
+        CacheKeyParameters:
+          - "integration.request.path.proxy"
+          - "integration.request.header.Client-ID"
+      MethodResponses:
+      - !If 
+        - enableCORS
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+        - !Ref AWS::NoValue
+
+  ApiCorsMethod:
+    Type: AWS::ApiGateway::Method
+    Condition: enableCORS
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId: !Ref ApiProxyEndpoint
+      RestApiId: !Ref ApiGateway
+      ApiKeyRequired: false
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: |
+            {
+              "statusCode": 200
+            }
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST'"
+              method.response.header.Access-Control-Allow-Origin: !Sub "'${CORSOrigin}'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Origin: true
+
+  ApiDeploymentDefault:
+    Type: AWS::ApiGateway::Deployment
+    Condition: userAgrees
+    DependsOn: ApiProxyMethodPOST
+    Properties:
+      RestApiId: !Ref ApiGateway
+      Description: !Sub "API Proxy Deployment"
+
+  ApiGatewayStageDefault:
+    Type: AWS::ApiGateway::Stage
+    Condition: userAgrees
+    Properties:
+      StageName: !Ref StageName
+      Description: !Sub "Api Proxy Stage: ${StageName}"
+      RestApiId: !Ref ApiGateway
+      DeploymentId: !Ref ApiDeploymentDefault
+      Variables:
+        clientid: !Sub "${TwitchClientID}"
+        token: !Sub "Bearer ${TwitchAppAccessToken}"
+      CacheClusterEnabled: !Ref ApiCachingEnabled
+      CacheClusterSize: 0.5
+      MethodSettings:
+        - HttpMethod: POST
+          CachingEnabled: !Ref ApiCachingEnabled
+          CacheTtlInSeconds: !Ref ApiCacheTTL
+          ResourcePath: "/{proxy+}"
+        - HttpMethod: GET
+          CachingEnabled: !Ref ApiCachingEnabled
+          CacheTtlInSeconds: !Ref ApiCacheTTL
+          ResourcePath: "/{proxy+}"
+      Tags:
+        - Key: "Name"
+          Value: !Sub "Api Proxy Stage -- ${StageName}"
+        - Key: "Service"
+          Value: !Ref ServiceName
+        - Key: "CreatedBy"
+          Value: !Ref CreatedByMsg
+
+  ApiGatewayIAMRole:
+    Type: AWS::IAM::Role
+    Condition: userAgrees
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+      Policies:
+        - PolicyName: !Sub '${ServiceName}NetworkInterfacePolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:CreateNetworkInterface
+                  - ec2:DetachNetworkInterface
+                  - ec2:ResetNetworkInterfaceAttribute
+                  - ec2:ModifyNetworkInterfaceAttribute
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeNetworkInterfaces
+                Resource: '*'
+        - PolicyName: !Sub '${ServiceName}ApiSyncCloudWatchAccessPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - xray:PutTraceSegments
+                  - xray:PutTelemetryRecords
+                Resource: '*'
+
+  # Api Security
+  ApiUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    Condition: enableApiKeys
+    Properties: 
+      ApiStages:
+        - ApiId: !Ref ApiGateway
+          Stage: !Ref ApiGatewayStageDefault
+      UsagePlanName: "Default"
+      Description: "Default Api Usage plan"
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${StageName}-DefaultUsagePlan"
+        - Key: "Service"
+          Value: !Ref ServiceName
+        - Key: "CreatedBy"
+          Value: !Ref CreatedByMsg
+    
+  ApiDefaultKey:
+    Type: AWS::ApiGateway::ApiKey
+    Condition: enableApiKeys
+    Properties:
+      Name: "DefaultKey"
+      Description: "Autogenerated Api key from Cloudformation deployment"
+      Enabled: true
+      GenerateDistinctId: true
+      Tags:
+      - Key: "Name"
+        Value: !Sub "${StageName}-DefaultApiKey"
+      - Key: "Service"
+        Value: !Ref ServiceName
+      - Key: "CreatedBy"
+        Value: !Ref CreatedByMsg
+
+  UsagePlanApiKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Condition: enableApiKeys
+    Properties: 
+      KeyId: !Ref ApiDefaultKey
+      KeyType: "API_KEY"
+      UsagePlanId: !Ref ApiUsagePlan
+
+  # Secret Storage and Rotation
+
+  TwitchAuthenticationCredentials:
+    Type: AWS::SecretsManager::Secret
+    Condition: userAgrees
+    Properties: 
+      Description: "Twitch/IGDB Credentials for access to the IGDB API. This secret handles access token storage and rotation"
+      SecretString: !Sub |
+          {
+            "client-id": "${TwitchClientID}",
+            "client-secret": "${TwitchClientSecret}",
+            "access_token": "${TwitchAppAccessToken}"
+          }
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${ServiceName}ApiCredentials"
+        - Key: "Service"
+          Value: !Ref ServiceName
+        - Key: "CreatedBy"
+          Value: !Ref CreatedByMsg
+
+  TwitchTokenRefreshRole:
+    Type: AWS::IAM::Role
+    Condition: userAgrees
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: "lambda.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: !Sub "${ServiceName}CloudWatchPolicy"
+          PolicyDocument: 
+            Statement: 
+              - Effect: Allow
+                Action: "logs:CreateLogGroup"
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
+              - Effect: Allow
+                Action: 
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/TwitchTokenRefresh:*"
+        - PolicyName: !Sub "${ServiceName}ApiGatewayPolicy"
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Sid: "UpdateStages"
+                Action: "apigateway:PATCH"
+                Resource: !Sub 
+                  - "arn:aws:apigateway:${AWS::Region}::/restapis/${GatewayID}/stages/*"
+                  - GatewayID: !Ref ApiGateway
+              - Effect: Allow
+                Sid: "CreateDeployments"
+                Action: "apigateway:POST"
+                Resource: !Sub 
+                  - "arn:aws:apigateway:${AWS::Region}::/restapis/${GatewayID}/deployments"
+                  - GatewayID: !Ref ApiGateway
+        - PolicyName: !Sub "${ServiceName}SecretsmanagerPolicy"
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - "secretsmanager:GetSecretValue"
+                  - "secretsmanager:DescribeSecret"
+                  - "secretsmanager:PutSecretValue"
+                  - "secretsmanager:UpdateSecretVersionStage"
+                  - "secretsmanager:UpdateSecret"
+                Resource: !Ref TwitchAuthenticationCredentials
+
+  TwitchTokenRefresh:
+    Type: AWS::Lambda::Function
+    Condition: userAgrees
+    Properties:
+      Architectures:
+        - arm64
+      Description: "Lambda Function that handles Twitch/IGDB Credentials rotation. Rotates the Access Token and updates both the secret and the Api Gateway Variables."
+      Layers:
+        - !Ref RotationLambdaPythonLayer
+      MemorySize: 128
+      Role: !GetAtt TwitchTokenRefreshRole.Arn
+      Runtime: python3.9
+      Timeout: 6
+      FunctionName: "TwitchTokenRefresh"
+      Environment:
+        Variables:
+          GATEWAY_ID: !Ref ApiGateway
+          GATEWAY_STAGE_NAME: !Ref ApiGatewayStageDefault
+      Handler: "index.lambda_handler"
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${ServiceName}Gateway"
+        - Key: "Service"
+          Value: !Ref ServiceName
+        - Key: "CreatedBy"
+          Value: !Ref CreatedByMsg
+      Code:
+        ZipFile: |
+          import json
+          import boto3
+          import os
+          import logging
+          import requests
+
+          logger = logging.getLogger()
+          logger.setLevel(logging.INFO)
+
+          def lambda_handler(event, context):
+            arn = event['SecretId']
+            token = event['ClientRequestToken']
+            step = event['Step']
+
+            # Initiate the Client
+            secretsmanager_client = boto3.client('secretsmanager')
+
+            metadata = secretsmanager_client.describe_secret(SecretId=arn)
+            if not metadata['RotationEnabled']:
+                logger.error("Secret %s is not enabled for rotation" % arn)
+                raise ValueError("Secret %s is not enabled for rotation" % arn)
+            versions = metadata['VersionIdsToStages']
+            if token not in versions:
+                logger.error("Secret version %s has no stage for rotation of secret $s." % (token, arn))
+                raise ValueError("Secret version %s has no stage for rotation of secret $s." % (token, arn))
+            if "AWSCURRENT" in versions[token]:
+                logger.error("Secret version %s already set as AWSCURRENT for rotation of secret %s." % (token, arn))
+                return
+            elif "AWSPENDING" not in versions[token]:
+                logger.error("Secret version %s not set as AWSPENDING for rotation of secret %s." % (token, arn))
+                raise ValueError("Secret version %s not set as AWSPENDING for rotation of secret %s." % (token, arn))
+
+            # Perform rotation
+            if step == 'createSecret':
+                create_secret(secretsmanager_client, arn, token)
+            elif step == "setSecret":
+                set_secret(secretsmanager_client, arn, token)
+            elif step == "testSecret":
+                test_secret(secretsmanager_client, arn, token)
+            elif step == "finishSecret":
+                finish_secret(secretsmanager_client, arn, token)
+            else:
+                raise ValueError("Invalid step parameter %s" % step)
+
+          def create_secret(secretsmanager_client, arn, token):
+            # Make sure that the secret exists
+            current_secret = secretsmanager_client.get_secret_value(SecretId=arn, VersionStage="AWSCURRENT")
+
+            # Now try to get the secret version, if that fails, put a new secret
+            try:
+                secretsmanager_client.get_secret_value(SecretId=arn, VersionId=token, VersionStage="AWSPENDING")
+                logger.info("createSecret: Successfully retrieved secret for %s." % arn)
+            except secretsmanager_client.exceptions.ResourceNotFoundException:
+                current_secret_json = json.loads(current_secret['SecretString'])
+                request_parameters = {
+                    'client_id': current_secret_json['client-id'],
+                    'client_secret': current_secret_json['client-secret'],
+                    'grant_type': 'client_credentials'
+                }
+                token_request = requests.post("https://id.twitch.tv/oauth2/token", params=request_parameters)
+                if token_request.status_code != 200:
+                    raise ValueError("Twitch Token request failed with status code %s with the following message: %s." % (token_request.status_code, token_request.text))
+                
+                # Validate the token response
+                token_json = token_request.json()
+                if token_json['token_type'] != 'bearer':
+                    raise ValueError("The requested token was not of type bearer")
+                
+                current_secret_json['access_token'] = token_json['access_token']
+                logger.info(current_secret_json)
+                secretsmanager_client.put_secret_value(SecretId=arn, ClientRequestToken=token, SecretString=json.dumps(current_secret_json), VersionStages=['AWSPENDING'])
+                logger.info("generateSecret: Successfully put secret for ARN %s and version %s." % (arn, token))
+
+          def set_secret(secretsmanager_client, arn, token):
+            secret = secretsmanager_client.get_secret_value(SecretId=arn, VersionId=token, VersionStage="AWSPENDING")
+            secret_json = json.loads(secret['SecretString'])
+
+            # Client for ApiGateway
+            gateway_client = boto3.client('apigateway')
+            gateway_id = os.environ['GATEWAY_ID']
+            stageName = os.environ['GATEWAY_STAGE_NAME']
+
+            #  Update the Stage Environment
+            gateway_client.update_stage(restApiId=gateway_id, stageName=stageName, patchOperations=[
+                {
+                    'op': 'replace',
+                    'path': '/variables/token',
+                    'value': "bearer %s" % secret_json['access_token']
+                }
+            ])
+            #  Deploy new Stage
+            gateway_client.create_deployment(restApiId=gateway_id, stageName=stageName, description="Automatic Deployment following Access Token rotation")
+
+          def test_secret(secretsmanager_client, arn, token):
+            secret = secretsmanager_client.get_secret_value(SecretId=arn, VersionId=token, VersionStage="AWSPENDING")
+            secret_json = json.loads(secret['SecretString'])
+
+            request_headers = {
+                    'client-id': secret_json['client-id'],
+                    'Authorization': "bearer %s" % secret_json['access_token']
+                }
+            test_request = requests.get("https://api.igdb.com/v4/games", headers=request_headers)
+
+            if test_request.status_code != 200:
+                raise ValueError("testSecret: Access Token could not be used for the IGDB API")
+
+          def finish_secret(secretsmanager_client, arn, token):
+            # First describe the secret to get the current version
+            metadata = secretsmanager_client.describe_secret(SecretId=arn)
+            current_version = None
+            for version in metadata["VersionIdsToStages"]:
+                if "AWSCURRENT" in metadata["VersionIdsToStages"][version]:
+                    if version == token:
+                        # The correct version is already marked as current, return
+                        logger.info("finishSecret: Version %s already marked as AWSCURRENT for %s" % (version, arn))
+                        return
+                    current_version = version
+                    break
+
+            # Finalize by staging the secret version current
+            secretsmanager_client.update_secret_version_stage(SecretId=arn, VersionStage="AWSCURRENT", MoveToVersionId=token, RemoveFromVersionId=current_version)
+            logger.info("finishSecret: Successfully set AWSCURRENT stage to version %s for secret %s." % (token, arn))
+
+  TwitchTokenRefreshPermissions:
+    Type: AWS::Lambda::Permission
+    Condition: userAgrees
+    Properties:
+       FunctionName: !GetAtt TwitchTokenRefresh.Arn
+       Action: "lambda:InvokeFunction"
+       Principal: "secretsmanager.amazonaws.com"
+
+  TwitchCredentialsRotation:
+    Type: AWS::SecretsManager::RotationSchedule
+    Condition: userAgrees
+    Properties:
+      SecretId: !Ref TwitchAuthenticationCredentials
+      RotationLambdaARN: !GetAtt TwitchTokenRefresh.Arn
+      RotateImmediatelyOnUpdate: true
+      RotationRules:
+        AutomaticallyAfterDays: !Ref AutomaticAccessTokenRotationTime
+
+Outputs:
+  ApiGatewayDNS:
+    Description: "The DNS for accessing the proxy."
+    Value: !Sub "https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${StageName}"
+    Export:
+      Name: !Sub "${ServiceName}DNSName"
+
+  ApiGatewayID:
+    Description: The logican ID of the Api Gateway
+    Value: !Ref ApiGateway
+    Export:
+      Name: !Sub "${ServiceName}ApiGatewayID"
+  
