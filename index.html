@@ -1,106 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Video Game Database</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="icon" href="./favicon.svg"/>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <header class="header">
-        <div class="header-content">
-            <div class="header-left">
-                <h1 class="header-title">Video Game Database</h1>
-            </div>
-            <div class="header-right">
-                <nav class="header-nav">
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Games</a></li>
-                        <li><a href="#">Statistics</a></li>
-                        <li><a href="#">Developers</a></li>
-                    </ul>
-                </nav>
-                <div class="search-bar">
-                    <input type="text" id="search" placeholder="Search...">
-                    <button id="search-button">Search</button>
-                </div>
-            </div>
+      <div class="header-content">
+        <div class="header-left">
+          <h1 class="header-title">Video Game Database</h1>
         </div>
+        <div class="header-right">
+          <nav class="header-nav">
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Games</a></li>
+              <li><a href="#">Statistics</a></li>
+              <li><a href="#">Developers</a></li>
+            </ul>
+          </nav>
+          <div class="search-bar">
+            <input type="text" id="search" placeholder="Search..." />
+            <button id="search-button">Search</button>
+          </div>
+        </div>
+      </div>
     </header>
 
     <main>
-        <section class="featured-games">
-            <h2>Featured Games</h2>
-            <div id="featured-games"></div>
-        </section>
+        <div class="featured-games-title">
+          <h2>Featured Games</h2>
+        </div>
+        <div class="featured-games">
+          <div id="featured-games-div"></div>
+        </div>
         <script>
-            // Function to fetch and display featured games
-            function fetchFeaturedGames() {
-                fetch('https://5way6uz0y2.execute-api.us-west-2.amazonaws.com/production/v4/games', {
-                    method: 'POST',
-                    headers: {
-                        // 'Client-ID': 'irf1sz9onq3k8rrnel5ieacesz2wh9',
-                        // 'Authorization': 'Bearer y4y2tmunw9cnufqjocnkpldavmzqps',
-                        'x-api-key': 'FNIEzeXkwb7j50DaHfEof2bIDuRFyPxS11FT3zAZ',
-                        'Accept': 'application/json',
-                    },
-                    body: 'fields cover.url,name; limit 5;'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const featuredGames = document.getElementById('featured-games');
-
-                    data.forEach(game => {
-                        if (game.cover && game.name) {
-                            const gameCard = document.createElement('div');
-                            gameCard.classList.add('game-card');
-
-                            // Display the game cover image and name
-                            const coverImageURL = game.cover.url;
-                            const name = game.name;
-
-                            const coverImg = document.createElement('img');
-                            coverImg.src = `https:${coverImageURL}`;
-                            gameCard.appendChild(coverImg);
-
-                            const gameName = document.createElement('h3');
-                            gameName.textContent = name;
-                            gameCard.appendChild(gameName);
-
-                            featuredGames.appendChild(gameCard);
-                        }
-                    });
-                })
-                .catch(error => console.error('Error:', error));
+          async function fetchFeaturedGames() {
+            try {
+              const resp = await fetch(
+                "https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https://api.igdb.com/v4/games",
+                {
+                  method: "POST",
+                  headers: {
+                    // 'Client-ID': 'irf1sz9onq3k8rrnel5ieacesz2wh9',
+                    // 'Authorization': 'Bearer y4y2tmunw9cnufqjocnkpldavmzqps',
+                    "x-api-key": "x3x8c7heF6FMCpuNxAon",
+                  },
+                  body: "fields cover.url,name; limit 20;",
+                  // mode: "no-cors",
+                }
+              );
+  
+              if (resp.status !== 200) {
+                throw new Error(`HTTP error! status: ${resp.status}`);
+              }
+  
+              const data = await resp.json();
+              const featuredGamesDiv = document.getElementById("featured-games-div");
+              data?.forEach((game) => {
+                if (game.name && game.cover && game.cover.url) {
+                  const gameCard = document.createElement("div");
+                  gameCard.classList.add("game-card");
+  
+                  // Display the game cover image and name
+                  const coverImageURL = game.cover.url;
+                  const name = game.name;
+  
+                  const bigCoverImageUrl = String(coverImageURL).replaceAll('/t_thumb/', '/t_cover_big/');
+  
+                  const coverImg = document.createElement("img");
+                  coverImg.src = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${bigCoverImageUrl}`;
+                  gameCard.appendChild(coverImg);
+  
+                  const gameName = document.createElement("h3");
+                  gameName.textContent = name;
+                  gameCard.appendChild(gameName);
+  
+                  featuredGamesDiv.appendChild(gameCard);
+                }
+              });
+            } catch (error) {
+              console.error(error);
             }
-
-            // Call the function to fetch and display featured games
-            fetchFeaturedGames();
+          }
+  
+          fetchFeaturedGames();
         </script>
-
+  
         <section class="games">
-            <h2>Latest Games</h2>
-            <ul>
-                <!-- ... Your latest games content ... -->
-                <li>
-                    <img src="https://via.placeholder.com/150x200" alt="Game Cover">
-                    <div>
-                        <h3>Game Title</h3>
-                        <p>Game Description</p>
-                        <ul>
-                            <li>Platform: Platform Name</li>
-                            <li>Developer: Developer Name</li>
-                            <li>Release Date: MM/DD/YYYY</li>
-                        </ul>
-                        <a href="#">Read More</a>
-                    </div>
-                </li>
-            </ul>
+          <h2>Latest Games</h2>
+          <ul>
+            <!-- Your latest games content here -->
+          </ul>
         </section>
-    </main>
-    <footer>
+      </main>
+  
+      <footer>
         <p>&copy; 2021 Video Game Database</p>
-    </footer>
-</body>
-</html>
+      </footer>
+    </body>
+  </html>

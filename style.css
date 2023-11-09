@@ -100,9 +100,19 @@ body {
     max-width: 1300px;
     margin: 0 auto;
     display: flex;
-    overflow-x: scroll;
+    flex-direction: row; /* Display cards from left to right */
+    flex-wrap: nowrap; /* Prevent wrapping to the next row */
+    overflow-x: auto; /* Add horizontal scroll if needed */
     white-space: nowrap;
     height: 500px;
+}
+
+.featured-games-div {
+    display: flex;
+    flex-direction: row; /* Display cards from left to right */
+    overflow-x: auto; /* Add horizontal scroll if needed */
+    white-space: nowrap;
+    height: 100%; /* Adjust the height as needed */
 }
 
 .game {
@@ -120,23 +130,38 @@ body {
     justify-content: space-between;
 }
 
+.featured-games-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+}
+
 .featured h2,
 .games h2 {
     font-size: 24px;
     margin-bottom: 10px;
+    margin-right: 20px;
+    
 }
 
 /* Style the game cards */
 .game-card {
-    display: flex;
-    align-items: center;
-    margin: 20px 0;
+    flex: 0 0 auto;
+    width: 300px; /* Adjust the width of each game card as needed */
+    margin-right: 20px;
+    border: 1px solid #ccc;
+    display: inline-block; /* Display game cards horizontally */
 }
 
 .game-card img {
-    max-width: 150px;
-    max-height: 200px;
-    margin-right: 20px;
+    width: 100%; /* Make the image fill the entire width of the game card */
+    height: 450px; /* Set a fixed height for the images (adjust as needed) */
+    object-fit: cover;
+    transition-property: opacity;
+    transition-duration: 500ms;
+    transition-timing-function: cubic-bezier(0.7, 0, 0.6, 1);
+    opacity: 1;
+    animation: 1000ms cubic-bezier(0.7, 0, 0.6, 1) 0s 1 normal none running materialize;
 }
 
 .game-card h3 {
