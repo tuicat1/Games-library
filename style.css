@@ -1,191 +1,190 @@
 /* Reset default margin and padding for all elements */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 /* Set a background color and text color for the entire page */
 body {
-    background-color: #f0f0f0;
-    color: #333;
-    font-family: Arial, sans-serif;
-    margin: 0;
+  background-color: #f0f0f0;
+  color: #333;
+  font-family: Arial, sans-serif;
+  margin: 0;
 }
 
 /* Style the header */
 .header {
-    background-color: #333;
-    color: #fff;
-    padding: 10px 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  background-color: #333;
+  color: #fff;
+  padding: 10px 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .header-content {
-    max-width: 1300px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
 }
 
 .header-left {
-    display: flex;
-    align-items: center;
-    text-align: left;
+  display: flex;
+  align-items: center;
+  text-align: left;
 }
 
 .header-title {
-    font-size: 24px;
-    margin: 0;
+  font-size: 24px;
+  margin: 0;
 }
 
 .header-right {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .search-bar {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 #search {
-    padding: 6px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 #search-button {
-    background-color: #0077b6;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 6px 10px;
-    cursor: pointer;
+  background-color: #0077b6;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
 }
 
 .header-nav ul {
-    list-style: none;
-    margin: 0;
+  list-style: none;
+  margin: 0;
 }
 
 .header-nav li {
-    display: inline;
-    margin-right: 10px;
+  display: inline;
+  margin-right: 10px;
 }
 
 .header-nav a {
-    text-decoration: none;
-    color: #fff;
-    font-weight: bold;
-    text-align: left;
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  text-align: left;
 }
 
 /* Style the main content sections */
 .main {
-    max-width: 1300px; /* Set a max width for the main content */
-    margin: 0 auto; /* Center the main content */
-    padding: 20px;
-    margin-top: 60px;
+  max-width: 1300px; /* Set a max width for the main content */
+  margin: 0 auto; /* Center the main content */
+  padding: 20px;
+  margin-top: 60px;
 }
 
-
 .featured-games {
-    max-width: 1300px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: row; /* Display cards from left to right */
-    flex-wrap: nowrap; /* Prevent wrapping to the next row */
-    overflow-x: auto; /* Add horizontal scroll if needed */
-    white-space: nowrap;
-    height: 500px;
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row; /* Display cards from left to right */
+  flex-wrap: nowrap; /* Prevent wrapping to the next row */
+  overflow-x: auto; /* Add horizontal scroll if needed */
+  white-space: nowrap;
+  height: 500px;
 }
 
 .featured-games-div {
-    display: flex;
-    flex-direction: row; /* Display cards from left to right */
-    overflow-x: auto; /* Add horizontal scroll if needed */
-    white-space: nowrap;
-    height: 100%; /* Adjust the height as needed */
+  display: flex;
+  flex-direction: row; /* Display cards from left to right */
+  overflow-x: auto; /* Add horizontal scroll if needed */
+  white-space: nowrap;
+  height: 100%; /* Adjust the height as needed */
 }
 
 .game {
-    flex: 0 0 auto;
-    width: 300px;
-    margin-right: 20px;
-    border: 1px solid #ccc;
+  flex: 0 0 auto;
+  width: 300px;
+  margin-right: 20px;
+  border: 1px solid #ccc;
 }
 
 .games {
-    max-width: 1300px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .featured-games-title {
-    font-size: 24px;
-    margin-bottom: 10px;
-    margin-right: 20px;
+  font-size: 24px;
+  margin-bottom: 10px;
+  margin-right: 20px;
 }
 
 .featured h2,
 .games h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    margin-right: 20px;
-    
+  font-size: 24px;
+  margin-bottom: 10px;
+  margin-right: 20px;
 }
 
 /* Style the game cards */
 .game-card {
-    flex: 0 0 auto;
-    width: 300px; /* Adjust the width of each game card as needed */
-    margin-right: 20px;
-    border: 1px solid #ccc;
-    display: inline-block; /* Display game cards horizontally */
+  flex: 0 0 auto;
+  width: 300px; /* Adjust the width of each game card as needed */
+  margin-right: 20px;
+  border: 1px solid #ccc;
+  display: inline-block; /* Display game cards horizontally */
 }
 
 .game-card img {
-    width: 100%; /* Make the image fill the entire width of the game card */
-    height: 450px; /* Set a fixed height for the images (adjust as needed) */
-    object-fit: cover;
-    transition-property: opacity;
-    transition-duration: 500ms;
-    transition-timing-function: cubic-bezier(0.7, 0, 0.6, 1);
-    opacity: 1;
-    animation: 1000ms cubic-bezier(0.7, 0, 0.6, 1) 0s 1 normal none running materialize;
+  width: 100%; /* Make the image fill the entire width of the game card */
+  height: 450px; /* Set a fixed height for the images (adjust as needed) */
+  object-fit: cover;
+  transition-property: opacity;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.7, 0, 0.6, 1);
+  opacity: 1;
+  animation: 1000ms cubic-bezier(0.7, 0, 0.6, 1) 0s 1 normal none running
+    materialize;
 }
 
 .game-card h3 {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .game-card p {
-    font-size: 14px;
-    margin-top: 10px;
+  font-size: 14px;
+  margin-top: 10px;
 }
 
 .game-card ul {
-    list-style: none;
+  list-style: none;
 }
 
 .game-card li {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 /* Style the footer */
 footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #0077b6;
-    color: #fff;
-    font-size: 14px;
+  text-align: center;
+  padding: 10px;
+  background-color: #0077b6;
+  color: #fff;
+  font-size: 14px;
 }
