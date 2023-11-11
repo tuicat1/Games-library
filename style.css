@@ -87,12 +87,50 @@ body {
   text-align: left;
 }
 
+.main-container {
+  width: 1152px;
+  max-width: 100%;
+  padding: 0 15px;
+}
+
 /* Style the main content sections */
 .main {
-  max-width: 1300px; /* Set a max width for the main content */
-  margin: 0 auto; /* Center the main content */
-  padding: 20px;
-  margin-top: 60px;
+  display: block;
+}
+
+.parallax-container {
+  position: absolute;
+  left: 0;
+  height: 442px;
+  margin-top: -442px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.parallax-background {
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  background-position: center center;
+  -moz-filter: blur(8px);
+  -webkit-filter: blur(8px);
+  filter: blur(8px);
+  transform: scale(1.1);
+}
+
+.center {
+  margin: 0 auto;
+}
+
+.gamepage-header-info {
+  position: relative;
+  margin-bottom: 15px;
+  padding-top: 15px;
+}
+
+.gamepage-header {
+  width: 100%;
+  padding-top: 442px;
 }
 
 .featured-games {
