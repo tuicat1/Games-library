@@ -39,13 +39,15 @@
 
           <div class="gamepage-header-info">
             <div class="gamepage-cover">
-              <img class="gamecover-image" alt="PLACEHOLDER" src="PLACEHOLDER" style="height: 252px;"> 
+              <img class="img-responsive cover_big" alt="PLACEHOLDER" src="PLACEHOLDER" style="height: 352px;"> 
             </div>
             <div class="gamepage-summary">
               <div class="gamepage-title-container">
-                <h1 class="banner-title">PLACEHOLDER</h1>
-                <h2 class="banner-subheading">PLACEHOLDER</h2>
-                <h3 class="company-name">PLACEHOLDER</h3>
+                <div class="gamepage-title-wrapper">
+                  <h1 class="banner-title">PLACEHOLDER</h1>
+                  <h2 class="banner-subheading">PLACEHOLDER</h2>
+                  <h3 class="company-name">PLACEHOLDER</h3>
+                </div>
               </div>
             </div>
           </div>
@@ -87,10 +89,11 @@
         const bigCoverImageUrl = coverImageURL?.replace("/t_thumb/", "/t_cover_big/") || "";
 
         // Update placeholders with actual data
-        const parallaxContainer = document.querySelector('.parallax-container');
-        parallaxContainer.style.backgroundImage = `url('https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${screenshotBigUrl}')`;
+        const parallaxContainer = document.querySelector('.parallax-background');
+        const imageUrl = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${screenshotBigUrl}`;
+        parallaxContainer.style.backgroundImage = `url('${imageUrl}')`;
 
-        const gamecoverImage = document.querySelector('.gamecover-image');
+        const gamecoverImage = document.querySelector('.cover_big');
         gamecoverImage.src = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${bigCoverImageUrl}`;
         gamecoverImage.alt = `Game Cover: ${data[0]?.name || 'Unknown'}`;
 
