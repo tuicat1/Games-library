@@ -240,6 +240,14 @@ body {
   font-size: 14px;
 }
 
+.gamepage-description{
+  margin-top: 50px;
+}
+
+.text-semibold {
+  font-weight: 600;
+}
+
 @media (min-width: 420px) {
   .gamepage-summary {
     float: left;

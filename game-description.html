@@ -62,6 +62,21 @@
                     <h3 class="company-name">PLACEHOLDER</h3>
                   </div>
                 </div>
+                <div class="gamepage-tabs">
+                  <div class="gamepage-description">
+                    <p>
+                      <span class="text-semibold">Genre:</span>
+                      <span class="text-content" id="genre"></span>
+                    </p>
+                    <p>
+                      <span class="text-semibold">Platforms:</span>
+                      <span class="text-content" id="platforms"></span>
+                    </p>
+                    <div class="text-content" id="description">
+                      <!-- description -->
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -88,7 +103,7 @@
               headers: {
                 "x-api-key": "x3x8c7heF6FMCpuNxAon",
               },
-              body: `fields cover.url,name,first_release_date; limit 1; where name="${gameName}";`,
+              body: `fields name,first_release_date,cover.url,involved_companies,videos,platforms.name,genres.name; limit 1; where name="${gameName}";`,
             }
           );
 
@@ -102,7 +117,7 @@
             coverImageURL?.replace("/t_thumb/", "/t_screenshot_big/") || "";
           const bigCoverImageUrl =
             coverImageURL?.replace("/t_thumb/", "/t_cover_big/") || "";
-
+          console.log(data);
           // Update placeholders with actual data
           const parallaxContainer = document.querySelector(
             ".parallax-background"
@@ -117,26 +132,46 @@
           const bannerTitle = document.querySelector(".banner-title");
           bannerTitle.textContent = data[0]?.name || "Unknown";
 
+          document.getElementById("genre").textContent =
+            data[0]?.genres?.map((genre) => genre.name).join(", ") ||
+            "Genre not available";
+          document.getElementById("platforms").textContent =
+            data[0]?.platforms?.map((platform) => platform.name).join(", ") ||
+            "Platforms not available";
+
           // Uncomment and modify the following lines when you have actual data to display
           document.querySelector(".banner-subheading").textContent =
-            formatReleaseDate(data[0]?.first_release_date) ||
+            formatDate(data[0]?.first_release_date) ||
             "Release Date not available";
-          // document.querySelector('.company-name').textContent = /* Add a relevant property from your API response */;
+
+          document.querySelector(".company-name").textContent =
+            findDeveloper(data[0]?.involved_companies) ||
+            "Developer not available";
         } catch (error) {
           console.error(error);
           // Display an error message to the user if needed
         }
       }
-      function formatReleaseDate(releaseDate) {
-        if (releaseDate) {
+      function formatDate(unixTimestamp) {
+        if (unixTimestamp) {
           const options = { year: "numeric", month: "long", day: "numeric" };
-          return new Date(releaseDate * 1000).toLocaleDateString(
+          return new Date(unixTimestamp * 1000).toLocaleDateString(
             "en-US",
             options
           );
         }
-        return "";
+        return "Release Date not available";
       }
+
+      function findDeveloper(companyList) {
+        for (let i = 0; i < companyList.length; i++) {
+          if (companyList[i]?.developer === true) {
+            return companyList[i]?.company?.name || "Developer not available";
+          }
+        }
+        return "Developer not available";
+      }
+
       fetchGameDetails();
     </script>
   </body>
