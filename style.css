@@ -1,9 +1,8 @@
 /* Reset default margin and padding for all elements */
 * {
-  margin: 0;
-  padding: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
-  width: 100%;
 }
 
 /* Set a background color and text color for the entire page */
@@ -98,20 +97,20 @@ body {
   display: block;
 }
 
+.parallax-container {
+  position: absolute;
+  left: 0;
+  height: 220px;
+  margin-top: -220px;
+  width: 100%;
+  overflow: hidden;
+}
+
 @media (min-width: 1367px) {
   .parallax-container {
     height: 442px;
     margin-top: -442px;
   }
-}
-
-.parallax-container {
-  position: absolute;
-  left: 0;
-  height: 442px;
-  margin-top: -442px;
-  width: 100%;
-  overflow: hidden;
 }
 
 .parallax-background {
@@ -125,8 +124,41 @@ body {
   transform: scale(1.1);
 }
 
+.igdb-chat-message::after,
+.gamepage-header-info::after,
+.igdb-chat-message::before,
+.gamepage-header-info::before {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+::before,
+::after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 .center {
   margin: 0 auto;
+}
+
+.gamepage-header {
+  width: 100%;
+  padding-top: 220px;
+}
+
+@media (min-width: 1367px) {
+  .gamepage-header {
+    padding-top: 442px;
+  }
+}
+
+.gamepage-header__quick-list-input {
+  text-align: center;
 }
 
 .gamepage-header-info {
@@ -135,29 +167,33 @@ body {
   padding-top: 15px;
 }
 
+.gamepage-header-info .gamepage-title-container {
+  position: relative;
+}
+
 .gamepage-header-info .gamepage-title-wrapper {
-  position: absolute;
   bottom: 0;
   z-index: 2;
   width: 856px;
   min-height: 188px;
 }
 
-.gamepage-header {
-  width: 100%;
-  padding-top: 442px;
+.gamepage-actions {
+  display: flex;
+  justify-content: space-between;
 }
 
-@media (min-width: 1367px) {
-  .gamepage-cover {
-    margin-top: auto;
-  }
+.gamepage-actions > div {
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
-@media (min-width: 1367px) {
-  .gamepage-cover {
-    margin-bottom: 80px;
-  }
+.gamepage-actions > div:first-child {
+  margin-left: 0;
+}
+
+.gamepage-actions > div:last-child {
+  margin-right: 0;
 }
 
 .gamepage-cover {
@@ -167,8 +203,48 @@ body {
   margin-top: 90px;
 }
 
+@media (min-width: 1367px) {
+  .gamepage-cover {
+    margin-bottom: 80px;
+  }
+}
+
+@media (min-width: 1367px) {
+  .gamepage-cover {
+    margin-top: auto;
+  }
+}
+
 .gamepage-cover .cover_big {
   margin-bottom: 15px;
+}
+
+.gamepage-tabs {
+  padding-right: 15px;
+  border-right: 1px solid #ececec;
+}
+
+@media (min-width: 1367px) {
+  .gamepage-tabs {
+    padding-bottom: 80px;
+  }
+}
+
+@media (max-width: 420px) {
+  .gamepage-tabs .mobile {
+    max-width: 100vw;
+  }
+}
+
+.gamepage-tabs .article {
+  font-size: 14px;
+}
+
+@media (min-width: 420px) {
+  .gamepage-summary {
+    float: left;
+    width: 560px;
+  }
 }
 
 .img-responsive {
@@ -183,13 +259,6 @@ img {
 
 img {
   border: 0;
-}
-
-@media (min-width: 420px) {
-  .gamepage-summary {
-    float: left;
-    width: 560px;
-  }
 }
 
 .featured-games {
