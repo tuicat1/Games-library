@@ -67,6 +67,13 @@
                 const gameCard = document.createElement("div");
                 gameCard.classList.add("game-card");
 
+                // Create a link with the game name as the href
+                const gameLink = document.createElement("a");
+                gameLink.href = `game-description.html?gameName=${encodeURIComponent(
+                  game.name
+                )}`;
+                gameCard.appendChild(gameLink);
+
                 // Display the game cover image and name
                 const coverImageURL = game.cover.url;
                 const name = game.name;
@@ -78,11 +85,11 @@
 
                 const coverImg = document.createElement("img");
                 coverImg.src = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${bigCoverImageUrl}`;
-                gameCard.appendChild(coverImg);
+                gameLink.appendChild(coverImg);
 
                 const gameName = document.createElement("h3");
                 gameName.textContent = name;
-                gameCard.appendChild(gameName);
+                gameLink.appendChild(gameName);
 
                 featuredGamesDiv.appendChild(gameCard);
               }

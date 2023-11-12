@@ -29,8 +29,8 @@
     </div>
   </header>
 
-  <div id="main-contain" class="main-container center">
-    <main role="main">
+  <main>
+    <div id="main-contain" class="main-container center">
       <div id="content-page" class="content">
         <div class="gamepage-header">
           <div class="parallax-container">
@@ -51,11 +51,63 @@
           </div>
         </div>    
       </div>
-    </main> 
-  </div>
+    </div>
+  </main>
 
   <footer>
     <p>&copy; 2021 Video Game Database</p>
   </footer>
+
+  <script>
+    async function fetchGameDetails() {
+      try {
+        // Extract the game name from the URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const gameName = params.get('gameName');
+
+        // Use the game name to fetch details
+        const resp = await fetch(
+          `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https://api.igdb.com/v4/games`,
+          {
+            method: "POST",
+            headers: {
+              "x-api-key": "x3x8c7heF6FMCpuNxAon",
+            },
+            body: `fields cover.url,name; limit 1; where name="${gameName}";`,
+          }
+        );
+
+        if (resp.status !== 200) {
+          throw new Error(`HTTP error! status: ${resp.status}`);
+        }
+
+        const data = await resp.json();
+        const coverImageURL = data[0]?.cover?.url;
+        const screenshotBigUrl = coverImageURL?.replace("/t_thumb/", "/t_screenshot_big/") || "";
+        const bigCoverImageUrl = coverImageURL?.replace("/t_thumb/", "/t_cover_big/") || "";
+
+        // Update placeholders with actual data
+        const parallaxContainer = document.querySelector('.parallax-container');
+        parallaxContainer.style.backgroundImage = `url('https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${screenshotBigUrl}')`;
+
+        const gamecoverImage = document.querySelector('.gamecover-image');
+        gamecoverImage.src = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${bigCoverImageUrl}`;
+        gamecoverImage.alt = `Game Cover: ${data[0]?.name || 'Unknown'}`;
+
+        const bannerTitle = document.querySelector('.banner-title');
+        bannerTitle.textContent = data[0]?.name || 'Unknown';
+
+        // Uncomment and modify the following lines when you have actual data to display
+        // document.querySelector('.banner-subheading').textContent = /* Add a relevant property from your API response */;
+        // document.querySelector('.company-name').textContent = /* Add a relevant property from your API response */;
+
+      } catch (error) {
+        console.error(error);
+        // Display an error message to the user if needed
+      }
+    }
+
+    fetchGameDetails();
+  </script>
 </body>
 </html>
