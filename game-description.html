@@ -103,7 +103,7 @@
               headers: {
                 "x-api-key": "x3x8c7heF6FMCpuNxAon",
               },
-              body: `fields name,first_release_date,cover.url,involved_companies,videos,platforms.name,genres.name; limit 1; where name="${gameName}";`,
+              body: `fields name,first_release_date,cover.url,involved_companies,videos,platforms.name,genres.name,summary; limit 1; where name="${gameName}";`,
             }
           );
 
@@ -131,6 +131,9 @@
 
           const bannerTitle = document.querySelector(".banner-title");
           bannerTitle.textContent = data[0]?.name || "Unknown";
+          
+          const description = document.getElementById("description");
+          description.textContent = data[0]?.summary || "Description not available";
 
           document.getElementById("genre").textContent =
             data[0]?.genres?.map((genre) => genre.name).join(", ") ||
