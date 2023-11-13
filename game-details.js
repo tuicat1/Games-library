@@ -89,12 +89,30 @@ function initializeGauge(value) {
         max: 100,
         dialStartAngle: -90,
         dialEndAngle: -90.001,
-        value: value, // Set the gauge value dynamically
+        value: value, // Set the gauge value dynamically to total_rating
         label: function (value) {
           return Math.round(value * 100) / 100;
+        },
+        // Custom color function based on rating ranges
+        color: function (value) {
+          if (value < 20) {
+            return "#ef4655"; // red
+          } else if (value < 40) {
+            return "#f7aa38"; // orange
+          } else if (value < 60) {
+            return "#fffa50"; // yellow
+          } else {
+            return "#5ee432"; // green
+          }
         }
       }
     );
-  }
+    }
+    function loop() {
+        gauge1.setValueAnimated(value, 1); // Assuming value is defined somewhere
+        window.setTimeout(loop, 4000);
+      }
+      
 
-  fetchGameDetails();
+fetchGameDetails();
+loop();
