@@ -393,6 +393,52 @@ img {
   font-size: 2em;
 }
 
+@media (min-width: 1367px) {
+  .banner-title {
+    font-size: 60px;
+  }
+}
+
+.banner-title {
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.banner-title, .banner-subheading, .banner-subsubheading {
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+}
+
+/* search suggestions */
+.search-suggestions-box {
+  display: block !important;
+  position: absolute;
+  top: 43px;
+  left: 1300px;
+  width: 390px;
+  max-height: 150px; /* Set a fixed height for the suggestion box */
+  overflow-y: auto; /* Add a scrollbar if the suggestions exceed the max height */
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc;
+  z-index: 1000;
+}
+
+.suggestion-item {
+  padding: 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc; /* Add a border between suggestion items */
+  color: #000;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none; /* Remove the border for the last suggestion item */
+}
+
+.suggestion-item:hover {
+  background-color: #f0f0f0;
+}
 
 /* Style the footer */
 footer {

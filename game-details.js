@@ -93,7 +93,7 @@ function initializeGauge(value) {
       value: value,
       showValue: true,
       label: function (value) {
-        return Math.round(value * 100) / 100;
+        return Math.round(value * 100 / 100);
       },
       color: function (value) {
         if (value < 20) {

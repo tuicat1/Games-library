@@ -45,18 +45,28 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   
     function displaySuggestions(suggestions) {
-      clearSuggestions();
-      suggestions.forEach((suggestion) => {
-        const suggestionItem = document.createElement("li");
-        suggestionItem.textContent = suggestion;
-        suggestionItem.addEventListener("click", () => {
-          searchInput.value = suggestion;
-          clearSuggestions();
-          handleSearch();
-        });
-        searchSuggestions.appendChild(suggestionItem);
-      });
-    }
+        clearSuggestions();
+      
+        if (suggestions.length > 0) {
+          const dropdownBox = document.createElement("div");
+          dropdownBox.className = "search-suggestions-box";
+      
+          suggestions.forEach((suggestion) => {
+            const suggestionItem = document.createElement("div");
+            suggestionItem.className = "suggestion-item";
+            suggestionItem.textContent = suggestion;
+            suggestionItem.addEventListener("click", () => {
+              searchInput.value = suggestion;
+              clearSuggestions();
+              handleSearch();
+            });
+            dropdownBox.appendChild(suggestionItem);
+          });
+      
+          searchSuggestions.appendChild(dropdownBox);
+        }
+      }
+      
   
     function clearSuggestions() {
       searchSuggestions.innerHTML = "";
