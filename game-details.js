@@ -1,5 +1,5 @@
 // game-details.js
-
+let gauge1;
 async function fetchGameDetails() {
   try {
     // Extract the game name from the URL parameters
@@ -14,7 +14,7 @@ async function fetchGameDetails() {
         headers: {
           "x-api-key": "x3x8c7heF6FMCpuNxAon",
         },
-        body: `fields name,total_rating,first_release_date,cover.url,involved_companies,videos,platforms.name,genres.name,summary; limit 1; where name="${gameName}";`,
+        body: `fields name,total_rating,total_rating_count,first_release_date,cover.url,involved_companies,videos,platforms.name,genres.name,summary; limit 1; where name="${gameName}";`,
       }
     );
 
@@ -59,6 +59,8 @@ async function fetchGameDetails() {
 
     document.querySelector(".company-name").textContent =
       findDeveloper(data[0]?.involved_companies) || "Developer not available";
+
+    loop();
   } catch (error) {
     console.error(error);
     // Display an error message to the user if needed
@@ -84,35 +86,33 @@ function findDeveloper(companyList) {
 
 function initializeGauge(value) {
     var Gauge = window.Gauge;
-    var gauge1 = Gauge(
-      document.getElementById("gauge1"), {
-        max: 100,
-        dialStartAngle: -90,
-        dialEndAngle: -90.001,
-        value: value, // Set the gauge value dynamically to total_rating
-        label: function (value) {
-          return Math.round(value * 100) / 100;
-        },
-        // Custom color function based on rating ranges
-        color: function (value) {
-          if (value < 20) {
-            return "#ef4655"; // red
-          } else if (value < 40) {
-            return "#f7aa38"; // orange
-          } else if (value < 60) {
-            return "#fffa50"; // yellow
-          } else {
-            return "#5ee432"; // green
-          }
+    var gauge1 = Gauge(document.getElementById("gauge1"), {
+      max: 100,
+      dialStartAngle: -90,
+      dialEndAngle: -90.001,
+      value: value,
+      showValue: true,
+      label: function (value) {
+        return Math.round(value * 100) / 100;
+      },
+      color: function (value) {
+        if (value < 20) {
+          return "#ef4655"; // red
+        } else if (value < 40) {
+          return "#f7aa38"; // orange
+        } else if (value < 60) {
+          return "#fffa50"; // yellow
+        } else {
+          return "#5ee432"; // green
         }
-      }
-    );
-    }
+      },     
+    });
+    gauge1.setValue(value);
+  }
     function loop() {
-        gauge1.setValueAnimated(value, 1); // Assuming value is defined somewhere
+        gauge1.setValueAnimated(gauge1.config.value, 1); // Assuming value is defined somewhere
         window.setTimeout(loop, 4000);
       }
       
 
 fetchGameDetails();
-loop();
