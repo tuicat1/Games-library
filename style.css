@@ -292,7 +292,7 @@ img {
   flex: 0 0 auto;
   width: 300px;
   margin-right: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #fffdfd;
 }
 
 .games {
@@ -363,7 +363,7 @@ img {
   padding: 10px;
   background-color: #ffffff;
   margin: 7px;
-  border-radius: 3px;
+  border-radius: 50%;
   position: relative;
 }
 .gauge-container > .label {
