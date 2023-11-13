@@ -14,7 +14,7 @@ async function fetchGameDetails() {
         headers: {
           "x-api-key": "x3x8c7heF6FMCpuNxAon",
         },
-        body: `fields name,total_rating,total_rating_count,first_release_date,cover.url,involved_companies,videos,platforms.name,genres.name,summary; limit 1; where name="${gameName}";`,
+        body: `fields name,total_rating,total_rating_count,first_release_date,cover.url,involved_companies.developer,involved_companies.company.name,videos,platforms.name,genres.name,summary; limit 1; where name="${gameName}";`,
       }
     );
 
@@ -27,7 +27,7 @@ async function fetchGameDetails() {
     const screenshotBigUrl =
       coverImageURL?.replace("/t_thumb/", "/t_screenshot_big/") || "";
     const bigCoverImageUrl =
-      coverImageURL?.replace("/t_thumb/", "/t_cover_big/") || "";
+      coverImageURL?.replace("/t_thumb/", "/t_cover_big_2x/") || "";
 
     // Update placeholders with actual data
     const parallaxContainer = document.querySelector(".parallax-background");
@@ -76,13 +76,14 @@ function formatDate(unixTimestamp) {
 }
 
 function findDeveloper(companyList) {
-  return (
-    companyList
+    const developerCompanies = companyList
       ?.filter((company) => company?.developer === true)
-      ?.map((company) => company?.name || "Developer not available") ||
-    "Developer not available"
-  );
-}
+      ?.map((company) => company?.company?.name || "Developer not available");
+  
+    return developerCompanies && developerCompanies.length > 0
+      ? developerCompanies.join(", ")
+      : "Developer not available";
+  }
 
 function initializeGauge(value) {
     var Gauge = window.Gauge;
