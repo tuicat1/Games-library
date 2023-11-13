@@ -426,14 +426,29 @@ img {
 }
 
 .suggestion-item {
+  display: flex;
+  align-items: center;
   padding: 8px;
   cursor: pointer;
   border-bottom: 1px solid #ccc; /* Add a border between suggestion items */
-  color: #000;
+  color: #000; /* Set text color to black */
 }
 
 .suggestion-item:last-child {
   border-bottom: none; /* Remove the border for the last suggestion item */
+}
+
+.text-container {
+  flex-grow: 1;
+}
+
+.cover-container {
+  margin-right: 10px;
+}
+
+.cover-container img {
+  width: 40px;    /* Set the width of the cover image */
+  height: 60px;  /* Set the height of the cover image */
 }
 
 .suggestion-item:hover {

@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
             headers: {
               "x-api-key": "x3x8c7heF6FMCpuNxAon",
             },
-            body: `fields name; limit 5; search "${query}";`,
+            body: `fields name,cover.url; limit 5; search "${query}";`,
           }
         );
   
@@ -37,7 +37,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
   
         const data = await resp.json();
-        return data.map((game) => game.name);
+        return data.map((game) => ({
+          name: game.name,
+          coverUrl: game.cover?.url, // Access cover URL from the API response
+        }));
       } catch (error) {
         console.error(error);
         return [];
@@ -54,12 +57,29 @@ document.addEventListener("DOMContentLoaded", function () {
           suggestions.forEach((suggestion) => {
             const suggestionItem = document.createElement("div");
             suggestionItem.className = "suggestion-item";
-            suggestionItem.textContent = suggestion;
+      
+            // Create a container for cover image
+            const coverContainer = document.createElement("div");
+            coverContainer.className = "cover-container";
+            const coverImage = document.createElement("img");
+            coverImage.src = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${suggestion.coverUrl.replace("/t_thumb/", "/t_cover_small/")}`;
+            coverContainer.appendChild(coverImage);
+      
+            // Create a container for text
+            const textContainer = document.createElement("div");
+            textContainer.className = "text-container";
+            textContainer.textContent = suggestion.name;
+      
+            // Append cover image and text to the suggestion item
+            suggestionItem.appendChild(coverContainer);
+            suggestionItem.appendChild(textContainer);
+      
             suggestionItem.addEventListener("click", () => {
-              searchInput.value = suggestion;
+              searchInput.value = suggestion.name;
               clearSuggestions();
               handleSearch();
             });
+      
             dropdownBox.appendChild(suggestionItem);
           });
       
