@@ -14,7 +14,7 @@ async function fetchGameDetails() {
         headers: {
           "x-api-key": "x3x8c7heF6FMCpuNxAon",
         },
-        body: `fields name,total_rating,total_rating_count,first_release_date,cover.url,involved_companies.developer,involved_companies.company.name,videos,platforms.name,genres.name,summary; limit 1; where name="${gameName}";`,
+        body: `fields name,screenshots.url,total_rating,total_rating_count,first_release_date,cover.url,involved_companies.developer,involved_companies.company.name,videos,platforms.name,genres.name,summary; limit 1; where name="${gameName}";`,
       }
     );
 
@@ -59,6 +59,12 @@ async function fetchGameDetails() {
 
     document.querySelector(".company-name").textContent =
       findDeveloper(data[0]?.involved_companies) || "Developer not available";
+
+    const screenshots = data[0]?.screenshots || [];
+    const carouselImages = screenshots.map(
+        (screenshot) => `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${screenshot.url.replace("/t_thumb/", "/t_720p/")}`
+      );
+    updateImageCarousel(carouselImages);    
 
     loop();
   } catch (error) {
@@ -114,6 +120,28 @@ function initializeGauge(value) {
         gauge1.setValueAnimated(gauge1.config.value, 1); // Assuming value is defined somewhere
         window.setTimeout(loop, 4000);
       }
+
+    function updateImageCarousel(imageUrls) {
+        const carouselInner = document.querySelector('.carousel-inner');
+        carouselInner.innerHTML = ''; // Clear existing carousel content
       
+        imageUrls.forEach((imageUrl, index) => {
+          const slide = document.createElement('div');
+          slide.classList.add('carousel-item');
+      
+          // Set the first slide as active
+          if (index === 0) {
+            slide.classList.add('active');
+          }
+      
+          const img = document.createElement('img');
+          img.src = imageUrl;
+          img.classList.add('d-block', 'w-100');
+      
+          slide.appendChild(img);
+          carouselInner.appendChild(slide);
+        });
+      }      
+
 
 fetchGameDetails();
