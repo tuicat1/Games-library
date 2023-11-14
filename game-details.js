@@ -62,9 +62,13 @@ async function fetchGameDetails() {
 
     const screenshots = data[0]?.screenshots || [];
     const carouselImages = screenshots.map(
-        (screenshot) => `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${screenshot.url.replace("/t_thumb/", "/t_720p/")}`
-      );
-    updateImageCarousel(carouselImages);    
+      (screenshot) =>
+        `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${screenshot.url.replace(
+          "/t_thumb/",
+          "/t_720p/"
+        )}`
+    );
+    updateImageCarousel(carouselImages);
 
     loop();
   } catch (error) {
@@ -82,66 +86,65 @@ function formatDate(unixTimestamp) {
 }
 
 function findDeveloper(companyList) {
-    const developerCompanies = companyList
-      ?.filter((company) => company?.developer === true)
-      ?.map((company) => company?.company?.name || "Developer not available");
-  
-    return developerCompanies && developerCompanies.length > 0
-      ? developerCompanies.join(", ")
-      : "Developer not available";
-  }
+  const developerCompanies = companyList
+    ?.filter((company) => company?.developer === true)
+    ?.map((company) => company?.company?.name || "Developer not available");
+
+  return developerCompanies && developerCompanies.length > 0
+    ? developerCompanies.join(", ")
+    : "Developer not available";
+}
 
 function initializeGauge(value) {
-    var Gauge = window.Gauge;
-    var gauge1 = Gauge(document.getElementById("gauge1"), {
-      max: 100,
-      dialStartAngle: -90,
-      dialEndAngle: -90.001,
-      value: value,
-      showValue: true,
-      label: function (value) {
-        return Math.round(value * 100 / 100);
-      },
-      color: function (value) {
-        if (value < 20) {
-          return "#ef4655"; // red
-        } else if (value < 40) {
-          return "#f7aa38"; // orange
-        } else if (value < 60) {
-          return "#fffa50"; // yellow
-        } else {
-          return "#5ee432"; // green
-        }
-      },     
-    });
-    gauge1.setValue(value);
-  }
-    function loop() {
-        gauge1.setValueAnimated(gauge1.config.value, 1); // Assuming value is defined somewhere
-        window.setTimeout(loop, 4000);
+  var Gauge = window.Gauge;
+  var gauge1 = Gauge(document.getElementById("gauge1"), {
+    max: 100,
+    dialStartAngle: -90,
+    dialEndAngle: -90.001,
+    value: value,
+    showValue: true,
+    label: function (value) {
+      return Math.round((value * 100) / 100);
+    },
+    color: function (value) {
+      if (value < 20) {
+        return "#ef4655"; // red
+      } else if (value < 40) {
+        return "#f7aa38"; // orange
+      } else if (value < 60) {
+        return "#fffa50"; // yellow
+      } else {
+        return "#5ee432"; // green
       }
+    },
+  });
+  gauge1.setValue(value);
+}
+function loop() {
+  gauge1.setValueAnimated(gauge1.config.value, 1); // Assuming value is defined somewhere
+  window.setTimeout(loop, 4000);
+}
 
-    function updateImageCarousel(imageUrls) {
-        const carouselInner = document.querySelector('.carousel-inner');
-        carouselInner.innerHTML = ''; // Clear existing carousel content
-      
-        imageUrls.forEach((imageUrl, index) => {
-          const slide = document.createElement('div');
-          slide.classList.add('carousel-item');
-      
-          // Set the first slide as active
-          if (index === 0) {
-            slide.classList.add('active');
-          }
-      
-          const img = document.createElement('img');
-          img.src = imageUrl;
-          img.classList.add('d-block', 'w-100');
-      
-          slide.appendChild(img);
-          carouselInner.appendChild(slide);
-        });
-      }      
+function updateImageCarousel(imageUrls) {
+  const carouselInner = document.querySelector(".carousel-inner");
+  carouselInner.innerHTML = ""; // Clear existing carousel content
 
+  imageUrls.forEach((imageUrl, index) => {
+    const slide = document.createElement("div");
+    slide.classList.add("carousel-item");
+
+    // Set the first slide as active
+    if (index === 0) {
+      slide.classList.add("active");
+    }
+
+    const img = document.createElement("img");
+    img.src = imageUrl;
+    img.classList.add("d-block", "w-100");
+
+    slide.appendChild(img);
+    carouselInner.appendChild(slide);
+  });
+}
 
 fetchGameDetails();

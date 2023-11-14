@@ -244,7 +244,7 @@ body {
   font-size: 14px;
 }
 
-.gamepage-description{
+.gamepage-description {
   margin-top: 50px;
 }
 
@@ -375,7 +375,7 @@ img {
   right: 0;
   top: 0;
   display: inline-block;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   font-family: monospace;
   font-size: 0.8em;
   padding: 5px 10px;
@@ -383,12 +383,12 @@ img {
 .gauge-container > .gauge .dial {
   stroke: #334455;
   stroke-width: 1;
-  fill: rgba(0,0,0,0);
+  fill: rgba(0, 0, 0, 0);
 }
 .gauge-container > .gauge .value {
   stroke: rgb(47, 227, 255);
   stroke-width: 6;
-  fill: rgba(0,0,0,0);
+  fill: rgba(0, 0, 0, 0);
 }
 .gauge-container > .gauge .value-text {
   fill: rgb(0, 0, 0);
@@ -408,10 +408,12 @@ img {
   font-weight: bold;
 }
 
-.banner-title, .banner-subheading, .banner-subsubheading {
+.banner-title,
+.banner-subheading,
+.banner-subsubheading {
   font-weight: 600;
   color: white;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
 }
 
 /* search suggestions */
@@ -451,14 +453,13 @@ img {
 }
 
 .cover-container img {
-  width: 40px;    /* Set the width of the cover image */
-  height: 60px;  /* Set the height of the cover image */
+  width: 40px; /* Set the width of the cover image */
+  height: 60px; /* Set the height of the cover image */
 }
 
 .suggestion-item:hover {
   background-color: #f0f0f0;
 }
-
 
 /* Style the footer */
 footer {
