@@ -477,6 +477,39 @@ img {
   font-weight: bold;
 }
 
+.gamepage-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.status-button {
+  background-color: transparent; /* Set the background color to transparent */
+  color: #000; /* Set text color to black */
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: background-color 0.3s ease; /* Add a smooth transition for background color */
+}
+
+.status-button:hover {
+  background-color: #007bff; /* Change the background color on hover */
+}
+
+.status-button svg {
+  width: 30px; /* Adjust the width of the SVG icons as needed */
+  height: 30px;
+  fill: currentColor; /* Set the SVG fill color to match the text color */
+}
+
+.status-button p {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+}
 .segment-hours {
   margin-top: 5px;
   font-size: 18px;
