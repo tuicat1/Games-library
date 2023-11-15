@@ -461,6 +461,27 @@ img {
   background-color: #f0f0f0;
 }
 
+.how-long-banner {
+  background-color: #f2f2f2;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.time-segment {
+  display: inline-block;
+  margin: 0 20px;
+}
+
+.segment-title {
+  font-weight: bold;
+}
+
+.segment-hours {
+  margin-top: 5px;
+  font-size: 18px;
+}
+
 /* Style the footer */
 footer {
   text-align: center;
