@@ -147,4 +147,43 @@ function updateImageCarousel(imageUrls) {
   });
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+  const ratingContainer = document.querySelector('.rating');
+
+  ratingContainer.addEventListener('click', function(event) {
+    const clickedStar = event.target.closest('.rating-star');
+
+    if (clickedStar) {
+      const ratingValue = clickedStar.getAttribute('data-star');
+
+      ratingContainer.querySelectorAll('.rating-star').forEach(star => {
+        const starValue = star.getAttribute('data-star');
+        star.classList.toggle('clicked', starValue <= ratingValue);
+      });
+
+      console.log('Rated:', ratingValue);
+    }
+  });
+
+  // Add a hover effect to stars
+  ratingContainer.addEventListener('mouseover', function(event) {
+    const hoveredStar = event.target.closest('.rating-star');
+
+    if (hoveredStar) {
+      const ratingValue = hoveredStar.getAttribute('data-star');
+
+      ratingContainer.querySelectorAll('.rating-star').forEach(star => {
+        const starValue = star.getAttribute('data-star');
+        star.classList.toggle('hovered', starValue <= ratingValue);
+      });
+    }
+  });
+
+  // Remove the hover effect when the mouse leaves the rating container
+  ratingContainer.addEventListener('mouseout', function() {
+    ratingContainer.querySelectorAll('.rating-star').forEach(star => {
+      star.classList.remove('hovered');
+    });
+  });
+});
 fetchGameDetails();

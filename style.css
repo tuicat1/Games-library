@@ -132,12 +132,11 @@ body {
 .gamepage-header-info::after,
 .igdb-chat-message::before,
 .gamepage-header-info::before {
-  content: ".";
-  display: block;
-  height: 0;
+  content: "";
+  display: table;
   clear: both;
-  visibility: hidden;
 }
+
 
 ::before,
 ::after {
@@ -257,6 +256,11 @@ body {
     float: left;
     width: 560px;
   }
+}
+
+.gamepage-summary {
+  float: left;
+  width: 560px;
 }
 
 .img-responsive {
@@ -484,8 +488,9 @@ img {
 }
 
 .status-button {
-  background-color: transparent; /* Set the background color to transparent */
-  color: #000; /* Set text color to black */
+  width: 150px; 
+  background-color: transparent;
+  color: #000;
   border: none;
   padding: 10px;
   border-radius: 5px;
@@ -493,11 +498,10 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: background-color 0.3s ease; /* Add a smooth transition for background color */
+  transition: background-color 0.3s ease;
 }
-
 .status-button:hover {
-  background-color: #007bff; /* Change the background color on hover */
+  background-color: #c2c2c2; /* Change the background color on hover */
 }
 
 .status-button svg {
@@ -513,6 +517,55 @@ img {
 .segment-hours {
   margin-top: 5px;
   font-size: 18px;
+}
+
+.rating-container {
+  top: 50px;
+  margin-top: 60px;
+  width: 270px;
+  height: 150px;
+  box-sizing: border-box;
+  float: left;
+  padding: 10px;
+  
+  
+}
+
+.gamepage-rating {
+  font-weight: bold;
+  display: block;
+
+}
+
+.rating-star {
+  display: inline-block;
+  cursor: pointer;
+  width: 20px; /* Set the width of the star container */
+  height: 30px; /* Set the height of the star container */
+  overflow: hidden; /* Hide the overflow to only show the star image */
+  margin-right: 0.2px; /* Adjust spacing between stars as needed */
+}
+
+/* Style the star image */
+.star-image {
+  width: 100%; /* Make the image fill the entire container */
+  height: auto; /* Maintain the aspect ratio of the star image */
+  transition: filter 0.3s ease; /* Add a smooth transition effect */
+}
+
+/* Adjust brightness on hover to simulate filling color */
+.rating-star:hover .star-image {
+  filter: brightness(150%);
+}
+
+.rating-star.clicked .star-image {
+  content: url('green_star.svg');
+}
+
+/* Use the green star image for selected stars */
+.rating-star.hovered .star-image,
+.rating-star.hovered ~ .rating-star.clicked .star-image {
+  content: url('green_star.svg');
 }
 
 /* Style the footer */
