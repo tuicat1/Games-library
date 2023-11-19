@@ -281,7 +281,7 @@ img {
   max-width: 1300px;
   margin: 0 auto;
   display: flex;
-  flex-direction: row; /* Display cards from left to right */
+  flex-direction: column; /* Display cards from left to right */
   flex-wrap: nowrap; /* Prevent wrapping to the next row */
   overflow-x: auto; /* Add horizontal scroll if needed */
   white-space: nowrap;
@@ -326,8 +326,8 @@ img {
 
 .featured-games-title {
   font-size: 24px;
-  margin-bottom: 10px;
-  margin-right: 20px;
+  margin-left: 630px;
+  display: flex;
 }
 
 .featured h2,
@@ -352,7 +352,7 @@ img {
   height: 450px; /* Set a fixed height for the images (adjust as needed) */
   object-fit: cover;
   opacity: 1;
-
+  border-radius: 10px;
 }
 
 .game-card a {
