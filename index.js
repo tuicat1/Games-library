@@ -2,7 +2,10 @@
 
 function initializeGauge(value, containerId) {
     try {
+    console.log("Container ID:", containerId);
       var Gauge = window.Gauge;
+      var gaugeContainer = document.getElementById(containerId);
+      console.log("Gauge Container:", gaugeContainer);
       var gauge = Gauge(document.getElementById(containerId), {
         max: 100,
         dialStartAngle: -90,
@@ -70,12 +73,18 @@ function initializeGauge(value, containerId) {
           const name = game.name;
   
           const totalRating = game.total_rating || 0;
-  
+            
           const gaugeContainer = document.createElement("div");
-          gaugeContainer.classList.add("gauge-container");
-          gameLink.appendChild(gaugeContainer);
-  
-          initializeGauge(totalRating, `gauge-${name}`); // Pass the container id
+          gaugeContainer.classList.add("small-gauge-container");
+          
+          const containerId = `gauge-${name}`;
+          gaugeContainer.id = containerId; 
+          gameCard.appendChild(gaugeContainer);
+
+          setTimeout(() => {
+            initializeGauge(totalRating, containerId); // Pass the container id
+          }, 10); // Adjust the delay if needed
+          
   
           const bigCoverImageUrl = String(coverImageURL).replaceAll(
             "/t_thumb/",

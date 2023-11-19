@@ -285,7 +285,7 @@ img {
   flex-wrap: nowrap; /* Prevent wrapping to the next row */
   overflow-x: auto; /* Add horizontal scroll if needed */
   white-space: nowrap;
-  height: 500px;
+  height: 550px;
 }
 
 .featured-games-div {
@@ -329,25 +329,41 @@ img {
   flex: 0 0 auto;
   width: 300px; /* Adjust the width of each game card as needed */
   margin-right: 20px;
-  border: 1px solid #ccc;
+
   display: inline-block; /* Display game cards horizontally */
+  position: relative;
 }
 
 .game-card img {
   width: 100%; /* Make the image fill the entire width of the game card */
   height: 450px; /* Set a fixed height for the images (adjust as needed) */
   object-fit: cover;
-  transition-property: opacity;
-  transition-duration: 500ms;
-  transition-timing-function: cubic-bezier(0.7, 0, 0.6, 1);
   opacity: 1;
-  animation: 1000ms cubic-bezier(0.7, 0, 0.6, 1) 0s 1 normal none running
-    materialize;
+
+}
+
+.game-card a {
+  text-decoration: none; /* Remove the default link underline */
+  color: #333; /* Set the desired text color */
 }
 
 .game-card h3 {
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: bottom;
+  bottom: 10px;
+  left: 10px;
   font-size: 18px;
+  text-decoration: none;
+  color: #000000;
 }
+
+.game-card h3:hover {
+  color: #666666; /* Set the desired text color on hover */
+  text-decoration: none;
+}
+
 
 .game-card p {
   font-size: 14px;
@@ -400,6 +416,49 @@ img {
   font-weight: bold;
   font-size: 2em;
 }
+
+/* ------ Small Gauge Style ---------- */
+.small-gauge-container {
+  width: 50px;
+  height: 50px;
+  display: block;
+  background-color: #ffffff;
+  margin: 7px;
+  border-radius: 50%;
+  position: absolute; 
+  bottom: 0; /* Align with the bottom edge of the game-card */
+  left: 0;   /* Align with the left edge of the game-card */ 
+  transform: translate( 0%, -50%); /* Center the gauge using a CSS transform */
+  margin-bottom: 20px;
+}
+.small-gauge-container > .label {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.5);
+  font-family: monospace;
+  font-size: 0.8em;
+  padding: 5px 10px;
+}
+.small-gauge-container > .gauge .dial {
+  stroke: #334455;
+  stroke-width: 1;
+  fill: rgba(0, 0, 0, 0);
+}
+.small-gauge-container > .gauge .value {
+  stroke: rgb(47, 227, 255);
+  stroke-width: 6;
+  fill: rgba(0, 0, 0, 0);
+}
+.small-gauge-container > .gauge .value-text {
+  fill: rgb(0, 0, 0);
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 2em;
+}
+
+
 
 @media (min-width: 1367px) {
   .banner-title {
