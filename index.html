@@ -8,6 +8,10 @@
     <link rel="icon" href="./favicon.svg" />
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="style.css" />
+    <script src="index.js" defer></script>
+    <script src="dist/gauge.min.js"></script>
+
+
   </head>
   <body>
     <header class="header">
@@ -39,69 +43,7 @@
       <div class="featured-games">
         <div id="featured-games-div"></div>
       </div>
-      <script>
-        async function fetchFeaturedGames() {
-          try {
-            const resp = await fetch(
-              "https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https://api.igdb.com/v4/games",
-              {
-                method: "POST",
-                headers: {
-                  // 'Client-ID': 'irf1sz9onq3k8rrnel5ieacesz2wh9',
-                  // 'Authorization': 'Bearer y4y2tmunw9cnufqjocnkpldavmzqps',
-                  "x-api-key": "x3x8c7heF6FMCpuNxAon",
-                },
-                body: "fields cover.url,name; limit 20;",
-                // mode: "no-cors",
-              }
-            );
 
-            if (resp.status !== 200) {
-              throw new Error(`HTTP error! status: ${resp.status}`);
-            }
-
-            const data = await resp.json();
-            const featuredGamesDiv =
-              document.getElementById("featured-games-div");
-            data?.forEach((game) => {
-              if (game.name && game.cover && game.cover.url) {
-                const gameCard = document.createElement("div");
-                gameCard.classList.add("game-card");
-
-                // Create a link with the game name as the href
-                const gameLink = document.createElement("a");
-                gameLink.href = `game-description.html?gameName=${encodeURIComponent(
-                  game.name
-                )}`;
-                gameCard.appendChild(gameLink);
-
-                // Display the game cover image and name
-                const coverImageURL = game.cover.url;
-                const name = game.name;
-
-                const bigCoverImageUrl = String(coverImageURL).replaceAll(
-                  "/t_thumb/",
-                  "/t_cover_big_2x/"
-                );
-
-                const coverImg = document.createElement("img");
-                coverImg.src = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${bigCoverImageUrl}`;
-                gameLink.appendChild(coverImg);
-
-                const gameName = document.createElement("h3");
-                gameName.textContent = name;
-                gameLink.appendChild(gameName);
-
-                featuredGamesDiv.appendChild(gameCard);
-              }
-            });
-          } catch (error) {
-            console.error(error);
-          }
-        }
-
-        fetchFeaturedGames();
-      </script>
 
       <section class="games">
         <h2>Upcoming Games</h2>
@@ -114,5 +56,7 @@
     <footer>
       <p>&copy; 2021 Video Game Database</p>
     </footer>
+
+
   </body>
 </html>
