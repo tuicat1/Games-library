@@ -1,12 +1,51 @@
 // game-details.js
-let gauge1;
+
+document.addEventListener('DOMContentLoaded', function () {
+  const ratingContainer = document.querySelector('.rating');
+
+  ratingContainer.addEventListener('click', function (event) {
+    const clickedStar = event.target.closest('.rating-star');
+
+    if (clickedStar) {
+      const ratingValue = clickedStar.getAttribute('data-star');
+
+      ratingContainer.querySelectorAll('.rating-star').forEach(star => {
+        const starValue = star.getAttribute('data-star');
+        star.classList.toggle('clicked', starValue <= ratingValue);
+      });
+
+      console.log('Rated:', ratingValue);
+    }
+  });
+
+  // Add a hover effect to stars
+  ratingContainer.addEventListener('mouseover', function (event) {
+    const hoveredStar = event.target.closest('.rating-star');
+
+    if (hoveredStar) {
+      const ratingValue = hoveredStar.getAttribute('data-star');
+
+      ratingContainer.querySelectorAll('.rating-star').forEach(star => {
+        const starValue = star.getAttribute('data-star');
+        star.classList.toggle('hovered', starValue <= ratingValue);
+      });
+    }
+  });
+
+  // Remove the hover effect when the mouse leaves the rating container
+  ratingContainer.addEventListener('mouseout', function () {
+    ratingContainer.querySelectorAll('.rating-star').forEach(star => {
+      star.classList.remove('hovered');
+    });
+  });
+
+  fetchGameDetails();
+});
+
 async function fetchGameDetails() {
   try {
-    // Extract the game name from the URL parameters
-    const params = new URLSearchParams(window.location.search);
-    const gameName = params.get("gameName");
+    const gameName = new URLSearchParams(window.location.search).get("gameName");
 
-    // Use the game name to fetch details
     const resp = await fetch(
       `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https://api.igdb.com/v4/games`,
       {
@@ -23,58 +62,45 @@ async function fetchGameDetails() {
     }
 
     const data = await resp.json();
-    const coverImageURL = data[0]?.cover?.url;
-    const screenshotBigUrl =
-      coverImageURL?.replace("/t_thumb/", "/t_screenshot_big/") || "";
-    const bigCoverImageUrl =
-      coverImageURL?.replace("/t_thumb/", "/t_cover_big_2x/") || "";
+    const gameDetails = data[0];
 
-    // Update placeholders with actual data
-    const parallaxContainer = document.querySelector(".parallax-background");
-    const imageUrl = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${screenshotBigUrl}`;
-    parallaxContainer.style.backgroundImage = `url('${imageUrl}')`;
-
-    const gamecoverImage = document.querySelector(".cover_big");
-    gamecoverImage.src = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${bigCoverImageUrl}`;
-    gamecoverImage.alt = `Game Cover: ${data[0]?.name || "Unknown"}`;
-
-    const bannerTitle = document.querySelector(".banner-title");
-    bannerTitle.textContent = data[0]?.name || "Unknown";
-
-    const description = document.getElementById("description");
-    description.textContent = data[0]?.summary || "Description not available";
-
-    const averageRating = data[0]?.total_rating || 0;
-    initializeGauge(averageRating);
-
-    document.getElementById("genre").textContent =
-      data[0]?.genres?.map((genre) => genre.name).join(", ") ||
-      "Genre not available";
-    document.getElementById("platforms").textContent =
-      data[0]?.platforms?.map((platform) => platform.name).join(", ") ||
-      "Platforms not available";
-
-    document.querySelector(".banner-subheading").textContent =
-      formatDate(data[0]?.first_release_date) || "Release Date not available";
-
-    document.querySelector(".company-name").textContent =
-      findDeveloper(data[0]?.involved_companies) || "Developer not available";
-
-    const screenshots = data[0]?.screenshots || [];
-    const carouselImages = screenshots.map(
-      (screenshot) =>
-        `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${screenshot.url.replace(
-          "/t_thumb/",
-          "/t_720p/"
-        )}`
-    );
-    updateImageCarousel(carouselImages);
-
-    loop();
+    updateUI(gameDetails);
   } catch (error) {
     console.error(error);
     // Display an error message to the user if needed
   }
+}
+
+function updateUI(gameDetails) {
+  const parallaxContainer = document.querySelector(".parallax-background");
+  const imageUrl = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${gameDetails.cover?.url?.replace("/t_thumb/", "/t_screenshot_big/") || ""}`;
+  parallaxContainer.style.backgroundImage = `url('${imageUrl}')`;
+
+  const gameCoverImage = document.querySelector(".cover_big");
+  gameCoverImage.src = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${gameDetails.cover?.url?.replace("/t_thumb/", "/t_cover_big_2x/") || ""}`;
+  gameCoverImage.alt = `Game Cover: ${gameDetails.name || "Unknown"}`;
+
+  const bannerTitle = document.querySelector(".banner-title");
+  bannerTitle.textContent = gameDetails.name || "Unknown";
+
+  const description = document.getElementById("description");
+  description.textContent = gameDetails.summary || "Description not available";
+
+  const averageRating = gameDetails.total_rating || 0;
+  initializeGauge(averageRating);
+
+  document.getElementById("genre").textContent = gameDetails.genres?.map(genre => genre.name).join(", ") || "Genre not available";
+  document.getElementById("platforms").textContent = gameDetails.platforms?.map(platform => platform.name).join(", ") || "Platforms not available";
+
+  document.querySelector(".banner-subheading").textContent = formatDate(gameDetails.first_release_date) || "Release Date not available";
+
+  document.querySelector(".company-name").textContent = findDeveloper(gameDetails.involved_companies) || "Developer not available";
+
+  const screenshots = gameDetails.screenshots || [];
+  const carouselImages = screenshots.map(screenshot => `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${screenshot.url.replace("/t_thumb/", "/t_720p/")}`);
+  updateImageCarousel(carouselImages);
+
+  loop();
 }
 
 function formatDate(unixTimestamp) {
@@ -87,8 +113,8 @@ function formatDate(unixTimestamp) {
 
 function findDeveloper(companyList) {
   const developerCompanies = companyList
-    ?.filter((company) => company?.developer === true)
-    ?.map((company) => company?.company?.name || "Developer not available");
+    ?.filter(company => company?.developer === true)
+    ?.map(company => company?.company?.name || "Developer not available");
 
   return developerCompanies && developerCompanies.length > 0
     ? developerCompanies.join(", ")
@@ -103,10 +129,8 @@ function initializeGauge(value) {
     dialEndAngle: -90.001,
     value: value,
     showValue: true,
-    label: function (value) {
-      return Math.round((value * 100) / 100);
-    },
-    color: function (value) {
+    label: value => Math.round((value * 100) / 100),
+    color: value => {
       if (value < 20) {
         return "#ef4655"; // red
       } else if (value < 40) {
@@ -120,6 +144,7 @@ function initializeGauge(value) {
   });
   gauge1.setValue(value);
 }
+
 function loop() {
   gauge1.setValueAnimated(gauge1.config.value, 1); // Assuming value is defined somewhere
   window.setTimeout(loop, 4000);
@@ -146,44 +171,3 @@ function updateImageCarousel(imageUrls) {
     carouselInner.appendChild(slide);
   });
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-  const ratingContainer = document.querySelector('.rating');
-
-  ratingContainer.addEventListener('click', function(event) {
-    const clickedStar = event.target.closest('.rating-star');
-
-    if (clickedStar) {
-      const ratingValue = clickedStar.getAttribute('data-star');
-
-      ratingContainer.querySelectorAll('.rating-star').forEach(star => {
-        const starValue = star.getAttribute('data-star');
-        star.classList.toggle('clicked', starValue <= ratingValue);
-      });
-
-      console.log('Rated:', ratingValue);
-    }
-  });
-
-  // Add a hover effect to stars
-  ratingContainer.addEventListener('mouseover', function(event) {
-    const hoveredStar = event.target.closest('.rating-star');
-
-    if (hoveredStar) {
-      const ratingValue = hoveredStar.getAttribute('data-star');
-
-      ratingContainer.querySelectorAll('.rating-star').forEach(star => {
-        const starValue = star.getAttribute('data-star');
-        star.classList.toggle('hovered', starValue <= ratingValue);
-      });
-    }
-  });
-
-  // Remove the hover effect when the mouse leaves the rating container
-  ratingContainer.addEventListener('mouseout', function() {
-    ratingContainer.querySelectorAll('.rating-star').forEach(star => {
-      star.classList.remove('hovered');
-    });
-  });
-});
-fetchGameDetails();

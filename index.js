@@ -24,7 +24,7 @@ function initializeGauge(value, containerId) {
           }
         },
       });
-  
+    
       if (!gauge) {
         console.error(`Gauge not initialized for container with ID: ${containerId}`);
       } else {
@@ -68,6 +68,7 @@ function initializeGauge(value, containerId) {
   
           const coverImageURL = game.cover.url;
           const name = game.name;
+  
           const totalRating = game.total_rating || 0;
   
           const gaugeContainer = document.createElement("div");
