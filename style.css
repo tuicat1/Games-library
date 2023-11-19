@@ -286,7 +286,20 @@ img {
   overflow-x: auto; /* Add horizontal scroll if needed */
   white-space: nowrap;
   height: 550px;
+  animation: fadeInFromRight 1s ease-out;
 }
+
+@keyframes fadeInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px); /* Start position outside the viewport */
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0); /* End position at the normal position */
+  }
+}
+
 
 .featured-games-div {
   display: flex;
