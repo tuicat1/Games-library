@@ -47,7 +47,7 @@ function initializeGauge(value, containerId) {
           headers: {
             "x-api-key": "x3x8c7heF6FMCpuNxAon",
           },
-          body: "fields cover.url,name,total_rating; limit 20;",
+          body: "fields cover.url,name,total_rating,release_dates; limit 20;",
         }
       );
   
