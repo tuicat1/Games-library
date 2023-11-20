@@ -342,9 +342,9 @@ img {
   flex: 0 0 auto;
   width: 300px; /* Adjust the width of each game card as needed */
   margin-right: 20px;
-
   display: inline-block; /* Display game cards horizontally */
   position: relative;
+  overflow: hidden;
 }
 
 .game-card img {
@@ -586,6 +586,47 @@ img {
   margin: 5px 0 0 0;
   font-size: 14px;
 }
+
+.index-buttons {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0; /* Initially set the opacity to 0 to hide the buttons */
+  transition: opacity 0.3s ease;
+}
+.game-card:hover .index-buttons {
+  opacity: 1;
+}
+
+.index-status-button {
+  width: 50px;
+  background-color: transparent;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: background-color 0.3s ease;
+  margin-bottom: 10px; /* Adjust spacing between buttons */
+}
+
+.index-status-button:hover {
+  background-color: #c2c2c2; /* Change the background color on hover */
+}
+
+.index-status-button svg {
+  width: 30px; /* Adjust the width of the SVG icons as needed */
+  height: 30px;
+  fill: currentColor; /* Set the SVG fill color to match the text color */
+}
+
+
+
 .segment-hours {
   margin-top: 5px;
   font-size: 18px;
