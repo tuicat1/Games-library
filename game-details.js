@@ -1,41 +1,41 @@
 // game-details.js
 
-document.addEventListener('DOMContentLoaded', function () {
-  const ratingContainer = document.querySelector('.rating');
+document.addEventListener("DOMContentLoaded", function () {
+  const ratingContainer = document.querySelector(".rating");
 
-  ratingContainer.addEventListener('click', function (event) {
-    const clickedStar = event.target.closest('.rating-star');
+  ratingContainer.addEventListener("click", function (event) {
+    const clickedStar = event.target.closest(".rating-star");
 
     if (clickedStar) {
-      const ratingValue = clickedStar.getAttribute('data-star');
+      const ratingValue = clickedStar.getAttribute("data-star");
 
-      ratingContainer.querySelectorAll('.rating-star').forEach(star => {
-        const starValue = star.getAttribute('data-star');
-        star.classList.toggle('clicked', starValue <= ratingValue);
+      ratingContainer.querySelectorAll(".rating-star").forEach((star) => {
+        const starValue = star.getAttribute("data-star");
+        star.classList.toggle("clicked", starValue <= ratingValue);
       });
 
-      console.log('Rated:', ratingValue);
+      console.log("Rated:", ratingValue);
     }
   });
 
   // Add a hover effect to stars
-  ratingContainer.addEventListener('mouseover', function (event) {
-    const hoveredStar = event.target.closest('.rating-star');
+  ratingContainer.addEventListener("mouseover", function (event) {
+    const hoveredStar = event.target.closest(".rating-star");
 
     if (hoveredStar) {
-      const ratingValue = hoveredStar.getAttribute('data-star');
+      const ratingValue = hoveredStar.getAttribute("data-star");
 
-      ratingContainer.querySelectorAll('.rating-star').forEach(star => {
-        const starValue = star.getAttribute('data-star');
-        star.classList.toggle('hovered', starValue <= ratingValue);
+      ratingContainer.querySelectorAll(".rating-star").forEach((star) => {
+        const starValue = star.getAttribute("data-star");
+        star.classList.toggle("hovered", starValue <= ratingValue);
       });
     }
   });
 
   // Remove the hover effect when the mouse leaves the rating container
-  ratingContainer.addEventListener('mouseout', function () {
-    ratingContainer.querySelectorAll('.rating-star').forEach(star => {
-      star.classList.remove('hovered');
+  ratingContainer.addEventListener("mouseout", function () {
+    ratingContainer.querySelectorAll(".rating-star").forEach((star) => {
+      star.classList.remove("hovered");
     });
   });
 
@@ -44,7 +44,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function fetchGameDetails() {
   try {
-    const gameName = new URLSearchParams(window.location.search).get("gameName");
+    const gameName = new URLSearchParams(window.location.search).get(
+      "gameName"
+    );
 
     const resp = await fetch(
       `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https://api.igdb.com/v4/games`,
@@ -73,11 +75,15 @@ async function fetchGameDetails() {
 
 function updateUI(gameDetails) {
   const parallaxContainer = document.querySelector(".parallax-background");
-  const imageUrl = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${gameDetails.cover?.url?.replace("/t_thumb/", "/t_screenshot_big/") || ""}`;
+  const imageUrl = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${
+    gameDetails.cover?.url?.replace("/t_thumb/", "/t_screenshot_big/") || ""
+  }`;
   parallaxContainer.style.backgroundImage = `url('${imageUrl}')`;
 
   const gameCoverImage = document.querySelector(".cover_big");
-  gameCoverImage.src = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${gameDetails.cover?.url?.replace("/t_thumb/", "/t_cover_big_2x/") || ""}`;
+  gameCoverImage.src = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${
+    gameDetails.cover?.url?.replace("/t_thumb/", "/t_cover_big_2x/") || ""
+  }`;
   gameCoverImage.alt = `Game Cover: ${gameDetails.name || "Unknown"}`;
 
   const bannerTitle = document.querySelector(".banner-title");
@@ -89,15 +95,27 @@ function updateUI(gameDetails) {
   const averageRating = gameDetails.total_rating || 0;
   initializeGauge(averageRating);
 
-  document.getElementById("genre").textContent = gameDetails.genres?.map(genre => genre.name).join(", ") || "Genre not available";
-  document.getElementById("platforms").textContent = gameDetails.platforms?.map(platform => platform.name).join(", ") || "Platforms not available";
+  document.getElementById("genre").textContent =
+    gameDetails.genres?.map((genre) => genre.name).join(", ") ||
+    "Genre not available";
+  document.getElementById("platforms").textContent =
+    gameDetails.platforms?.map((platform) => platform.name).join(", ") ||
+    "Platforms not available";
 
-  document.querySelector(".banner-subheading").textContent = formatDate(gameDetails.first_release_date) || "Release Date not available";
+  document.querySelector(".banner-subheading").textContent =
+    formatDate(gameDetails.first_release_date) || "Release Date not available";
 
-  document.querySelector(".company-name").textContent = findDeveloper(gameDetails.involved_companies) || "Developer not available";
+  document.querySelector(".company-name").textContent =
+    findDeveloper(gameDetails.involved_companies) || "Developer not available";
 
   const screenshots = gameDetails.screenshots || [];
-  const carouselImages = screenshots.map(screenshot => `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${screenshot.url.replace("/t_thumb/", "/t_720p/")}`);
+  const carouselImages = screenshots.map(
+    (screenshot) =>
+      `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${screenshot.url.replace(
+        "/t_thumb/",
+        "/t_720p/"
+      )}`
+  );
   updateImageCarousel(carouselImages);
 
   loop();
@@ -113,8 +131,8 @@ function formatDate(unixTimestamp) {
 
 function findDeveloper(companyList) {
   const developerCompanies = companyList
-    ?.filter(company => company?.developer === true)
-    ?.map(company => company?.company?.name || "Developer not available");
+    ?.filter((company) => company?.developer === true)
+    ?.map((company) => company?.company?.name || "Developer not available");
 
   return developerCompanies && developerCompanies.length > 0
     ? developerCompanies.join(", ")
@@ -129,8 +147,8 @@ function initializeGauge(value) {
     dialEndAngle: -90.001,
     value: value,
     showValue: true,
-    label: value => Math.round((value * 100) / 100),
-    color: value => {
+    label: (value) => Math.round((value * 100) / 100),
+    color: (value) => {
       if (value < 20) {
         return "#ef4655"; // red
       } else if (value < 40) {

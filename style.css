@@ -137,7 +137,6 @@ body {
   clear: both;
 }
 
-
 ::before,
 ::after {
   -webkit-box-sizing: border-box;
@@ -300,7 +299,6 @@ img {
   }
 }
 
-
 .featured-games-div {
   display: flex;
   flex-direction: row; /* Display cards from left to right */
@@ -361,7 +359,7 @@ img {
 }
 
 .game-card h3 {
-  white-space: nowrap; 
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   position: bottom;
@@ -376,7 +374,6 @@ img {
   color: #666666; /* Set the desired text color on hover */
   text-decoration: none;
 }
-
 
 .game-card p {
   font-size: 14px;
@@ -438,10 +435,10 @@ img {
   background-color: #ffffff;
   margin: 7px;
   border-radius: 50%;
-  position: absolute; 
+  position: absolute;
   bottom: 0; /* Align with the bottom edge of the game-card */
-  left: 0;   /* Align with the left edge of the game-card */ 
-  transform: translate( 0%, -50%); /* Center the gauge using a CSS transform */
+  left: 0; /* Align with the left edge of the game-card */
+  transform: translate(0%, -50%); /* Center the gauge using a CSS transform */
   margin-bottom: 20px;
 }
 .small-gauge-container > .label {
@@ -470,8 +467,6 @@ img {
   font-weight: bold;
   font-size: 2em;
 }
-
-
 
 @media (min-width: 1367px) {
   .banner-title {
@@ -560,7 +555,7 @@ img {
 }
 
 .status-button {
-  width: 150px; 
+  width: 150px;
   background-color: transparent;
   color: #000;
   border: none;
@@ -625,8 +620,6 @@ img {
   fill: currentColor; /* Set the SVG fill color to match the text color */
 }
 
-
-
 .segment-hours {
   margin-top: 5px;
   font-size: 18px;
@@ -640,14 +633,11 @@ img {
   box-sizing: border-box;
   float: left;
   padding: 10px;
-  
-  
 }
 
 .gamepage-rating {
   font-weight: bold;
   display: block;
-
 }
 
 .rating-star {
@@ -672,13 +662,13 @@ img {
 }
 
 .rating-star.clicked .star-image {
-  content: url('green_star.svg');
+  content: url("green_star.svg");
 }
 
 /* Use the green star image for selected stars */
 .rating-star.hovered .star-image,
 .rating-star.hovered ~ .rating-star.clicked .star-image {
-  content: url('green_star.svg');
+  content: url("green_star.svg");
 }
 
 /* Style the footer */
