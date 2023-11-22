@@ -1,19 +1,19 @@
 // index.js
 
-function initializeGauge(value, containerId) {
+function initializeGauge(value, containerId, max = 100, dialStartAngle = -90, dialEndAngle = -90.001) {
   try {
     console.log("Container ID:", containerId);
     var Gauge = window.Gauge;
     var gaugeContainer = document.getElementById(containerId);
     console.log("Gauge Container:", gaugeContainer);
-    var gauge = Gauge(document.getElementById(containerId), {
-      max: 100,
-      dialStartAngle: -90,
-      dialEndAngle: -90.001,
+    var gauge = Gauge(gaugeContainer, {
+      max: max,
+      dialStartAngle: dialStartAngle,
+      dialEndAngle: dialEndAngle,
       value: value,
       showValue: true,
       label: function (value) {
-        return Math.round((value * 100) / 100);
+        return Math.round((value * 100) / max);
       },
       color: function (value) {
         if (value < 20) {
@@ -29,9 +29,7 @@ function initializeGauge(value, containerId) {
     });
 
     if (!gauge) {
-      console.error(
-        `Gauge not initialized for container with ID: ${containerId}`
-      );
+      console.error(`Gauge not initialized for container with ID: ${containerId}`);
     } else {
       gauge.setValue(value);
     }
@@ -40,104 +38,71 @@ function initializeGauge(value, containerId) {
   }
 }
 
-async function fetchFeaturedGames() {
-  try {
-    currentDate = Math.floor(Date.now() / 1000);
-    const resp = await fetch(
-      "https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https://api.igdb.com/v4/games",
-      {
-        method: "POST",
-        headers: {
-          "x-api-key": "x3x8c7heF6FMCpuNxAon",
-        },
-        body: "fields cover.url,name,total_rating; where release_dates.date > " + currentDate + "; sort date asc; limit 20;",
+function createGameCard(game) {
+  if (game.name && game.cover && game.cover.url) {
+    const gameCard = document.createElement("div");
+    gameCard.classList.add("game-card");
 
-        // body: "fields where game.platforms = 48 & release_dates.date > currentDate; sort date asc;"
-      }
+    const gameLink = document.createElement("a");
+    gameLink.href = `game-description.html?gameName=${encodeURIComponent(game.name)}`;
+    gameCard.appendChild(gameLink);
+
+    const coverImageURL = game.cover.url;
+
+    const totalRating = game.total_rating || 0;
+
+    const gaugeContainer = document.createElement("div");
+    gaugeContainer.classList.add("small-gauge-container");
+
+    const containerId = `gauge-${game.name}`;
+    gaugeContainer.id = containerId;
+    gameCard.appendChild(gaugeContainer);
+
+    setTimeout(() => {
+      initializeGauge(totalRating, containerId);
+    }, 10);
+
+    const bigCoverImageUrl = String(coverImageURL).replaceAll(
+      "/t_thumb/",
+      "/t_cover_big_2x/"
     );
 
-    if (resp.status !== 200) {
-      throw new Error(`HTTP error! status: ${resp.status}`);
-    }
+    const coverImg = document.createElement("img");
+    coverImg.src = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${bigCoverImageUrl}`;
+    gameLink.appendChild(coverImg);
 
-    const data = await resp.json();
-    const featuredGamesDiv = document.getElementById("featured-games-div");
+    const gameName = document.createElement("h3");
+    gameName.textContent = game.name;
+    gameLink.appendChild(gameName);
 
-    data?.forEach((game) => {
-      if (game.name && game.cover && game.cover.url) {
-        const gameCard = document.createElement("div");
-        gameCard.classList.add("game-card");
+    // Create buttons div
+    const buttonsDiv = document.createElement("div");
+    buttonsDiv.classList.add("index-buttons");
 
-        const gameLink = document.createElement("a");
-        gameLink.href = `game-description.html?gameName=${encodeURIComponent(
-          game.name
-        )}`;
-        gameCard.appendChild(gameLink);
+    // Create Want button
+    const wantButton = createStatusButton("Want");
+    buttonsDiv.appendChild(wantButton);
 
-        const coverImageURL = game.cover.url;
-        const name = game.name;
+    // Create Playing button
+    const playingButton = createStatusButton("Playing");
+    buttonsDiv.appendChild(playingButton);
 
-        const totalRating = game.total_rating || 0;
+    // Create Played button
+    const playedButton = createStatusButton("Played");
+    buttonsDiv.appendChild(playedButton);
 
-        const gaugeContainer = document.createElement("div");
-        gaugeContainer.classList.add("small-gauge-container");
+    // Append buttons div to the game card
+    gameCard.appendChild(buttonsDiv);
 
-        const containerId = `gauge-${name}`;
-        gaugeContainer.id = containerId;
-        gameCard.appendChild(gaugeContainer);
-
-        setTimeout(() => {
-          initializeGauge(totalRating, containerId); // Pass the container id
-        }, 10); // Adjust the delay if needed
-
-        const bigCoverImageUrl = String(coverImageURL).replaceAll(
-          "/t_thumb/",
-          "/t_cover_big_2x/"
-        );
-
-        const coverImg = document.createElement("img");
-        coverImg.src = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${bigCoverImageUrl}`;
-        gameLink.appendChild(coverImg);
-
-        const gameName = document.createElement("h3");
-        gameName.textContent = name;
-        gameLink.appendChild(gameName);
-
-        // Create buttons div
-        const buttonsDiv = document.createElement("div");
-        buttonsDiv.classList.add("index-buttons");
-
-        // Create Want button
-        const wantButton = createStatusButton("Want");
-        buttonsDiv.appendChild(wantButton);
-
-        // Create Playing button
-        const playingButton = createStatusButton("Playing");
-        buttonsDiv.appendChild(playingButton);
-
-        // Create Played button
-        const playedButton = createStatusButton("Played");
-        buttonsDiv.appendChild(playedButton);
-
-        // Append buttons div to the game card
-        gameCard.appendChild(buttonsDiv);
-
-        featuredGamesDiv.appendChild(gameCard);
-      }
-    });
-  } catch (error) {
-    console.error(error);
+    return gameCard;
   }
 }
 
-
-// Function to create status buttons
 function createStatusButton(status) {
   const button = document.createElement("button");
   button.classList.add("index-status-button");
   button.id = `${status.toLowerCase()}-button`;
 
-  // Use a switch statement to set the icon and text based on status
   switch (status) {
     case "Want":
       button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="30" height="30"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-11h2v4h-2zm0 5h2v2h-2z"/></svg>`;
@@ -151,20 +116,50 @@ function createStatusButton(status) {
     default:
       break;
   }
+
   button.addEventListener("click", function () {
-    // Toggle button color on press
     const currentColor = button.style.backgroundColor;
 
     if (currentColor === "green") {
-      // If the button is already the desired color, remove the color
       button.style.removeProperty("background-color");
     } else {
-      // If the button is not the desired color, set the desired color
       button.style.backgroundColor = "green";
     }
   });
 
   return button;
+}
+
+async function fetchFeaturedGames() {
+  try {
+    currentDate = Math.floor(Date.now() / 1000);
+    const resp = await fetch(
+      "https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https://api.igdb.com/v4/games",
+      {
+        method: "POST",
+        headers: {
+          "x-api-key": "x3x8c7heF6FMCpuNxAon",
+        },
+        body: "fields cover.url,name,total_rating; where release_dates.date > " + currentDate + "; sort date asc; limit 20;",
+      }
+    );
+
+    if (resp.status !== 200) {
+      throw new Error(`HTTP error! status: ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    const featuredGamesDiv = document.getElementById("featured-games-div");
+
+    data?.forEach((game) => {
+      const gameCard = createGameCard(game);
+      if (gameCard) {
+        featuredGamesDiv.appendChild(gameCard);
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 fetchFeaturedGames();
