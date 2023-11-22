@@ -42,6 +42,7 @@ function initializeGauge(value, containerId) {
 
 async function fetchFeaturedGames() {
   try {
+    currentDate = Math.floor(Date.now() / 1000);
     const resp = await fetch(
       "https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https://api.igdb.com/v4/games",
       {
@@ -49,7 +50,9 @@ async function fetchFeaturedGames() {
         headers: {
           "x-api-key": "x3x8c7heF6FMCpuNxAon",
         },
-        body: "fields cover.url,name,total_rating,release_dates; limit 20;",
+        body: "fields cover.url,name,total_rating; where release_dates.date > " + currentDate + "; sort date asc; limit 20;",
+
+        // body: "fields where game.platforms = 48 & release_dates.date > currentDate; sort date asc;"
       }
     );
 
@@ -126,6 +129,7 @@ async function fetchFeaturedGames() {
     console.error(error);
   }
 }
+
 
 // Function to create status buttons
 function createStatusButton(status) {
