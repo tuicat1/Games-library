@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
           headers: {
             "x-api-key": "x3x8c7heF6FMCpuNxAon",
           },
-          body: "fields cover.url,name,total_rating; where release_dates.date > " + currentDate + "; sort date asc; limit 20;",
+          body: "fields cover.url,name,total_rating; where release_dates.date > " + currentDate + "; sort date asc; limit 40;",
         }
       );
   

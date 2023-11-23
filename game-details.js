@@ -75,9 +75,16 @@ async function fetchGameDetails() {
 
 function updateUI(gameDetails) {
   const parallaxContainer = document.querySelector(".parallax-background");
-  const imageUrl = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${
-    gameDetails.cover?.url?.replace("/t_thumb/", "/t_screenshot_big/") || ""
-  }`;
+  // Choose a random screenshot URL
+  const screenshots = gameDetails.screenshots || [];
+  const randomIndex = Math.floor(Math.random() * screenshots.length);
+  const randomImageUrl = screenshots[randomIndex]?.url || '';
+
+  // Set the random image as the parallax background
+  const imageUrl = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${randomImageUrl.replace(
+    "/t_thumb/",
+    "/t_screenshot_big/"
+  )}`;
   parallaxContainer.style.backgroundImage = `url('${imageUrl}')`;
 
   const gameCoverImage = document.querySelector(".cover_big");
@@ -108,7 +115,7 @@ function updateUI(gameDetails) {
   document.querySelector(".company-name").textContent =
     findDeveloper(gameDetails.involved_companies) || "Developer not available";
 
-  const screenshots = gameDetails.screenshots || [];
+
   const carouselImages = screenshots.map(
     (screenshot) =>
       `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${screenshot.url.replace(
