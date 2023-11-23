@@ -11,6 +11,9 @@ body {
   color: #333;
   font-family: Arial, sans-serif;
   margin: 0;
+  min-height: 100vh; /* Set minimum height of the body to 100% of the viewport height */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Style the header */
@@ -99,6 +102,7 @@ body {
 /* Style the main content sections */
 .main {
   display: block;
+  flex: 1;
 }
 
 .parallax-container {
@@ -276,6 +280,26 @@ img {
   border: 0;
 }
 
+.upcoming-games {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap to the next line */
+
+  /* Additional styles for height and animation */
+  height: 550px;
+  animation: fadeInFromRight 1s ease-out;
+}
+
+.upcoming-games-div {
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap to the next line */
+
+  /* Additional styles for height */
+  height: 100%; /* Adjust the height as needed */
+}
+
+
 .featured-games {
   max-width: 1300px;
   margin: 0 auto;
@@ -322,10 +346,23 @@ img {
   justify-content: space-between;
 }
 
-.featured-games-title {
-  font-size: 24px;
-  margin-left: 630px;
+
+.featured-games-title a, h1{
+
+  max-width: 1300px;
+  margin: 0 auto;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  font-size: 40px;
+  text-decoration: none;
+  color: #333;
+  
+}
+
+.featured-games-title a:hover{
+  color: #666666;
+  text-decoration: none;
 }
 
 .featured h2,
@@ -671,6 +708,18 @@ img {
   content: url("green_star.svg");
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body::after {
+  content: '';
+  display: block;
+  height: 50px; /* Set same as footer's height */
+}
+
+
 /* Style the footer */
 footer {
   text-align: center;
@@ -678,4 +727,5 @@ footer {
   background-color: #0077b6;
   color: #fff;
   font-size: 14px;
+  margin-top: auto; /* Push the footer to the bottom */
 }
