@@ -1,6 +1,12 @@
 // index.js
 
-function initializeGauge(value, containerId, max = 100, dialStartAngle = -90, dialEndAngle = -90.001) {
+function initializeGauge(
+  value,
+  containerId,
+  max = 100,
+  dialStartAngle = -90,
+  dialEndAngle = -90.001
+) {
   try {
     console.log("Container ID:", containerId);
     var Gauge = window.Gauge;
@@ -29,7 +35,9 @@ function initializeGauge(value, containerId, max = 100, dialStartAngle = -90, di
     });
 
     if (!gauge) {
-      console.error(`Gauge not initialized for container with ID: ${containerId}`);
+      console.error(
+        `Gauge not initialized for container with ID: ${containerId}`
+      );
     } else {
       gauge.setValue(value);
     }
@@ -44,7 +52,9 @@ function createGameCard(game) {
     gameCard.classList.add("game-card");
 
     const gameLink = document.createElement("a");
-    gameLink.href = `game-description.html?gameName=${encodeURIComponent(game.name)}`;
+    gameLink.href = `game-description.html?gameName=${encodeURIComponent(
+      game.name
+    )}`;
     gameCard.appendChild(gameLink);
 
     const coverImageURL = game.cover.url;
@@ -140,7 +150,10 @@ async function fetchFeaturedGames() {
         headers: {
           "x-api-key": "x3x8c7heF6FMCpuNxAon",
         },
-        body: "fields cover.url,name,total_rating; where release_dates.date > " + currentDate + "; sort date asc; limit 20;",
+        body:
+          "fields cover.url,name,total_rating; where release_dates.date > " +
+          currentDate +
+          "; sort date asc; limit 20;",
       }
     );
 

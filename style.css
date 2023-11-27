@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 /* Reset default margin and padding for all elements */
 * {
   -webkit-box-sizing: border-box;
@@ -172,7 +172,6 @@ body {
   position: relative;
   margin-bottom: 15px;
   padding-top: 15px;
-
 }
 
 .gamepage-header-info .gamepage-title-container {
@@ -301,8 +300,6 @@ img {
   height: 100%; /* Adjust the height as needed */
 }
 
-
-
 .featured-games {
   max-width: 1300px;
   margin: 0 auto;
@@ -349,9 +346,8 @@ img {
   justify-content: space-between;
 }
 
-
-.featured-games-title a, h1{
-
+.featured-games-title a,
+h1 {
   max-width: 1300px;
   margin: 0 auto;
   display: flex;
@@ -360,10 +356,9 @@ img {
   font-size: 40px;
   text-decoration: none;
   color: #333;
-  
 }
 
-.featured-games-title a:hover{
+.featured-games-title a:hover {
   color: #666666;
   text-decoration: none;
 }
@@ -711,13 +706,14 @@ img {
   content: url("green_star.svg");
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
 }
 
 body::after {
-  content: '';
+  content: "";
   display: block;
   height: 50px; /* Set same as footer's height */
 }
@@ -753,7 +749,7 @@ img {
   left: 0;
   z-index: 900;
   width: 100%;
-  
+
   bottom: 0;
 }
 .menu label {

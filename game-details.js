@@ -78,7 +78,7 @@ function updateUi(gameDetails) {
   // Choose a random screenshot URL
   const screenshots = gameDetails.screenshots || [];
   const randomIndex = Math.floor(Math.random() * screenshots.length);
-  const randomImageUrl = screenshots[randomIndex]?.url || '';
+  const randomImageUrl = screenshots[randomIndex]?.url || "";
 
   // Set the random image as the parallax background
   const imageUrl = `https://cors-proxy.austen-edge.workers.dev/corsproxy/?apiurl=https:${randomImageUrl.replace(
@@ -114,7 +114,6 @@ function updateUi(gameDetails) {
 
   document.querySelector(".company-name").textContent =
     findDeveloper(gameDetails.involved_companies) || "Developer not available";
-
 
   const carouselImages = screenshots.map(
     (screenshot) =>
@@ -189,7 +188,7 @@ function createSlides(imageUrls) {
     const slide = document.createElement("div");
     slide.className = "slide";
     slide.style.backgroundImage = `url(${imageUrl})`;
-    slide.style.flexDirection = 'row'; // Set the flex direction to row
+    slide.style.flexDirection = "row"; // Set the flex direction to row
 
     // Append elements to the container and menu
     container.appendChild(input);
@@ -198,10 +197,7 @@ function createSlides(imageUrls) {
   });
 }
 
-
-
 function loop() {
   gauge1.setValueAnimated(gauge1.config.value, 1); // Assuming value is defined somewhere
   window.setTimeout(loop, 4000);
 }
-
