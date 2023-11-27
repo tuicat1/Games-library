@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 /* Reset default margin and padding for all elements */
 * {
   -webkit-box-sizing: border-box;
@@ -171,6 +172,7 @@ body {
   position: relative;
   margin-bottom: 15px;
   padding-top: 15px;
+
 }
 
 .gamepage-header-info .gamepage-title-container {
@@ -719,8 +721,6 @@ body::after {
   display: block;
   height: 50px; /* Set same as footer's height */
 }
-
-
 /* Style the footer */
 footer {
   text-align: center;
@@ -729,4 +729,60 @@ footer {
   color: #fff;
   font-size: 14px;
   margin-top: auto; /* Push the footer to the bottom */
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica", sans-serif;
+}
+img {
+  max-width: 100%;
+}
+.slider-container {
+  height: 720px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.menu {
+  position: absolute;
+  left: 0;
+  z-index: 900;
+  width: 100%;
+  
+  bottom: 0;
+}
+.menu label {
+  cursor: pointer;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50px;
+  margin: 0 0.2em 1em;
+}
+.menu label:hover,
+.menu label:focus {
+  background: #1c87c9;
+}
+.slide {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  z-index: 10;
+  padding: 8em 1em 0;
+  background-size: cover;
+  background-position: 50% 50%;
+  transition: left 0s 0.75s;
+}
+[id^="slide"]:checked + .slide {
+  left: 0;
+  z-index: 100;
+  transition: left 0.65s ease-out;
 }

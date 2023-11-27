@@ -66,14 +66,14 @@ async function fetchGameDetails() {
     const data = await resp.json();
     const gameDetails = data[0];
 
-    updateUI(gameDetails);
+    updateUi(gameDetails);
   } catch (error) {
     console.error(error);
     // Display an error message to the user if needed
   }
 }
 
-function updateUI(gameDetails) {
+function updateUi(gameDetails) {
   const parallaxContainer = document.querySelector(".parallax-background");
   // Choose a random screenshot URL
   const screenshots = gameDetails.screenshots || [];
@@ -123,8 +123,7 @@ function updateUI(gameDetails) {
         "/t_720p/"
       )}`
   );
-  updateImageCarousel(carouselImages);
-
+  createSlides(carouselImages);
   loop();
 }
 
@@ -170,29 +169,39 @@ function initializeGauge(value) {
   gauge1.setValue(value);
 }
 
+function createSlides(imageUrls) {
+  const container = document.getElementById("slider-container");
+  const menu = document.getElementById("menu");
+
+  imageUrls.forEach((imageUrl, index) => {
+    // Create radio input
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "slides";
+    input.id = `slide-dot-${index + 1}`;
+    index === 0 && (input.checked = true); // Check the first radio input
+
+    // Create label for the radio input
+    const label = document.createElement("label");
+    label.htmlFor = `slide-dot-${index + 1}`;
+
+    // Create slide
+    const slide = document.createElement("div");
+    slide.className = "slide";
+    slide.style.backgroundImage = `url(${imageUrl})`;
+    slide.style.flexDirection = 'row'; // Set the flex direction to row
+
+    // Append elements to the container and menu
+    container.appendChild(input);
+    container.appendChild(slide);
+    menu.appendChild(label);
+  });
+}
+
+
+
 function loop() {
   gauge1.setValueAnimated(gauge1.config.value, 1); // Assuming value is defined somewhere
   window.setTimeout(loop, 4000);
 }
 
-function updateImageCarousel(imageUrls) {
-  const carouselInner = document.querySelector(".carousel-inner");
-  carouselInner.innerHTML = ""; // Clear existing carousel content
-
-  imageUrls.forEach((imageUrl, index) => {
-    const slide = document.createElement("div");
-    slide.classList.add("carousel-item");
-
-    // Set the first slide as active
-    if (index === 0) {
-      slide.classList.add("active");
-    }
-
-    const img = document.createElement("img");
-    img.src = imageUrl;
-    img.classList.add("d-block", "w-100");
-
-    slide.appendChild(img);
-    carouselInner.appendChild(slide);
-  });
-}
