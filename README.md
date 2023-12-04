@@ -1,4 +1,4 @@
-# Kelvin Games WebApp Repository
+# Games WebApp Repository
 
 Welcome to the Games WebApp repository! This repository contains the implementation of the web application for the Games platform, as part of the CompSci 235 course in Semester 2, 2023.
 
