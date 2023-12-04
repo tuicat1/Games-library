@@ -1,11 +1,14 @@
-# COMPSCI 235 Starter Repository for the Games WebApp Assignments
-This is a starter repository for the games webapp assignments of CompSci 235 in Semester 2, 2023.
+# Kelvin Games WebApp Repository
+
+Welcome to the Games WebApp repository! This repository contains the implementation of the web application for the Games platform, as part of the CompSci 235 course in Semester 2, 2023.
 
 ## Description
 
-This repository contains an implementation of the domain model from Assignment 1. It contains unit tests which can be run through pytest. It also contains a simple Flask application that renders content of a Game object instance from our domain model on a blank HTML page. 
+This repository is dedicated to the development of the Games web application. It encompasses a Flask-based application that showcases an interactive gaming platform. The application is designed to display game-related information fetched from our domain model. You can choose to either use the provided domain model or your own implementation from CodeRunner assignment 1.
 
-From here on you can **choose if you want to use the provided domain model or your own implementation from CodeRunner assignment 1**. The domain model implementation may have to be extended, and you may also decide to remove or modify test cases as it suits you. 
+
+## Prerequisites
+You must have Python 3.11 installed!
 
 ## Installation
 
@@ -40,10 +43,18 @@ $ flask run
 ```` 
 
 ## Testing
+Before testing, you must go into ```games/__init__.py```.
+Then, on line 16, change ```def create_app(test_config=None):``` to ```def create_app(test_config=True):```.
 
-After you have configured pytest as the testing tool for PyCharm (File - Settings - Tools - Python Integrated Tools - Testing), you can then run tests from within PyCharm by right-clicking the tests folder and selecting "Run pytest in tests".
+Then, in the terminal (root directory) run:
+```shell
+$ python -m pytest
+```
 
-Alternatively, from a terminal in the root folder of the project, you can also call 'python -m pytest tests' to run all the tests. PyCharm also provides a built-in terminal, which uses the configured virtual environment. 
+If you only wish to test the database components, in the terminal (root directory), run:
+```shell
+$ python -m pytest -v tests_db
+```
 
 ## Configuration
 
@@ -54,6 +65,17 @@ The *project directory/.env* file contains variable settings. They are set with 
 * `SECRET_KEY`: Secret key used to encrypt session data.
 * `TESTING`: Set to False for running the application. Overridden and set to True automatically when testing the application.
 * `WTF_CSRF_SECRET_KEY`: Secret key used by the WTForm library.
+
+These settings are for the database version of the code:
+
+* `SQLALCHEMY_DATABASE_URI`: The URI of the SQlite database, by default it will be created in the root directory of the project.
+* `SQLALCHEMY_ECHO`: If this flag is set to True, SQLAlchemy will print the SQL statements it uses internally to interact with the tables.
+
+
+## Repository Mode
+In the *games/.env* file, the REPOSITORY flag value can be changed to select the repository mode.
+
+* `REPOSITORY`: This flag allows us to easily switch between using the Memory repository or the SQLAlchemyDatabase repository. Can be set to either 'DATABASE' of SqlAlchemy or 'MEMORY' for memory database.
  
 ## Data sources
 
